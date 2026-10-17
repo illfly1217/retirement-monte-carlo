@@ -4,11 +4,24 @@ import{fanChart,barChart,rateChart,money,pct}from './charts.js';
 const $=id=>document.getElementById(id);
 const fractionFields=new Set(['rate','cagr','vol','fee','drag','inflation','inflationVol','usWeight','longRun','guard','adjust','ceiling','floor','spendingFloor','successTarget']);
 const stringFields=new Set(['strategy','returnMode','sampling','inflationModel','successMetric']);
+let selectedStrategy=null;
 let dataset=null,last=null,swr=null,busy=false,worker=null,job=0,activeJob=null,db=null,comparisons=null,assumptions=null;
 const descriptions={fixed:'每年維持初始生活費的購買力，支出穩定但可能耗盡資產。',percent:'按當年資產提領固定比例，支出跟著市場變化，生活費可能大幅縮水。',gk:'依護欄加減支出；全股票改編，最後 15 年停用減碼護欄。',dynamic:'以資產比例決定目標支出，限制每年實質調幅，仍可能耗盡資產。'};
 function config(){const c={};for(const k of Object.keys(DEFAULTS)){const e=$(k);c[k]=stringFields.has(k)?e.value:Number(e.value)/(fractionFields.has(k)?100:1);}return c;}
 function fill(c){for(const[k,v]of Object.entries(c))if($(k))$(k).value=fractionFields.has(k)?Number((v*100).toPrecision(12)):v;sync();}
-function sync(){const c=config();$('customFields').hidden=c.returnMode!=='custom';$('vcmmFields').hidden=c.returnMode!=='vcmm';$('volField').hidden=c.sampling!=='parametric';$('blockField').hidden=c.sampling!=='stationary';$('inflationVolField').hidden=c.inflationModel!=='lognormal';$('inflation').disabled=c.inflationModel==='historical';$('strategyHint').textContent=descriptions[c.strategy];$('vcmmAnchor').textContent=pct(vcmmRate(c.usWeight),3);if(!last){$('spendingMetric').textContent=money(c.initial*c.rate);$('spendingNote').textContent=`每月約 ${money(c.initial*c.rate/12)} · 稅前`;$('horizon').textContent=`${c.years} 年`;}$('parameters').classList.toggle('dirty',!!last);if(last)$('statusText').textContent='參數已更動；圖表保留上次執行結果，請重新模擬。';try{localStorage.setItem('retirement-config-v1',JSON.stringify(c));}catch{}}
+function sync(){const c=config();
+  const hasDetails=['gk','dynamic'].includes(c.strategy);
+  $('strategyDetails').hidden=!hasDetails;
+  if(selectedStrategy!==c.strategy)$('strategyDetails').open=hasDetails;
+  selectedStrategy=c.strategy;
+  for(const [strategy,group,fields] of [['gk','gkFields',['guard','adjust']],['dynamic','dynamicFields',['ceiling','floor']]]){
+    $(group).hidden=c.strategy!==strategy;
+    for(const id of fields){
+      if(c.strategy!==strategy&&(!Number.isFinite(c[id])||c[id]<Number($(id).min)/100||c[id]>Number($(id).max)/100)){$(id).value=DEFAULTS[id]*100;c[id]=DEFAULTS[id];}
+      $(id).disabled=c.strategy!==strategy;
+    }
+  }
+$('customFields').hidden=c.returnMode!=='custom';$('vcmmFields').hidden=c.returnMode!=='vcmm';$('volField').hidden=c.sampling!=='parametric';$('blockField').hidden=c.sampling!=='stationary';$('inflationVolField').hidden=c.inflationModel!=='lognormal';$('inflation').disabled=c.inflationModel==='historical';$('strategyHint').textContent=descriptions[c.strategy];$('vcmmAnchor').textContent=pct(vcmmRate(c.usWeight),3);if(!last){$('spendingMetric').textContent=money(c.initial*c.rate);$('spendingNote').textContent=`每月約 ${money(c.initial*c.rate/12)} · 稅前`;$('horizon').textContent=`${c.years} 年`;}$('parameters').classList.toggle('dirty',!!last);if(last)$('statusText').textContent='參數已更動；圖表保留上次執行結果，請重新模擬。';try{localStorage.setItem('retirement-config-v1',JSON.stringify(c));}catch{}}
 function showTab(name){document.querySelectorAll('.tab-panel').forEach(el=>el.hidden=el.id!==name);document.querySelectorAll('[data-tab]').forEach(el=>{el.classList.toggle('active',el.dataset.tab===name);el.setAttribute('aria-selected',el.dataset.tab===name?'true':'false');});if(name==='dashboard')draw();if(name==='safe'&&swr)rateChart($('swrChart'),swr.result.trials,swr.result.target);}
 function err(message){$('error').textContent=message;$('error').hidden=false;}
 function setBusy(value){busy=value;$('fields').disabled=value;for(const id of ['compareRun','assumptionRun','swrRun','csvUpload','clearData','successTarget','successMetric','spendingFloor'])$(id).disabled=value;$('cancel').hidden=!value;$('progress').hidden=!value;$('status').classList.toggle('busy',value);}

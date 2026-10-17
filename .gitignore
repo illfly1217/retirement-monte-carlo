@@ -1,0 +1,7 @@
+node_modules/
+*.tar.gz
+*.zip
+*.log
+local-data/
+playwright-report/
+.DS_Store

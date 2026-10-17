@@ -1,0 +1,39 @@
+{
+  "executed": "2026-10-17T09:12:20.965Z",
+  "environment": "Node on development host, not a browser claim",
+  "reports": [
+    {
+      "runtime": "v24.20.0",
+      "cpu": "12th Gen Intel(R) Core(TM) i7-12700KF",
+      "paths": 10000,
+      "years": 50,
+      "model": "parametric",
+      "marketMs": 218.32829999999998,
+      "evaluationMs": 60.703900000000004,
+      "totalMs": 279.0322,
+      "ruin": 0.4304,
+      "lifestyle": 0.5696,
+      "seed": 741
+    },
+    {
+      "runtime": "v24.20.0",
+      "cpu": "12th Gen Intel(R) Core(TM) i7-12700KF",
+      "paths": 100000,
+      "years": 50,
+      "model": "parametric",
+      "marketMs": 2141.4956,
+      "evaluationMs": 518.1761999999999,
+      "totalMs": 2659.6718,
+      "ruin": 0.4295,
+      "lifestyle": 0.5705,
+      "seed": 741
+    },
+    {
+      "operation": "150-point grid search",
+      "paths": 10000,
+      "years": 50,
+      "elapsedMs": 650.3863000000001,
+      "rate": 0.015
+    }
+  ]
+}

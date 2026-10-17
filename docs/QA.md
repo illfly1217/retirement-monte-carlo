@@ -12,7 +12,7 @@
 - 真正 Chromium 瀏覽器回歸：**9 passed、1 skipped**。桌面 5 項、手機尺寸 4 項；手機 100k 測試刻意跳過，viewport 模擬無法證明實體手機記憶體足夠。測試 artifacts 含 screenshot／失敗時 trace。
 - Node Worker shim 測試與 Chromium 回歸分開記錄；未混用成瀏覽器成績。
 
-文件與畫面 commit `0f6e959` 的重跑曾在 100k 測試遇到預設 5 秒 assertion timeout，當時實際 Worker 已進到 85% 百分位計算，沒有產品錯誤。此完成等待已改為 45 秒；這不是 5 秒效能承諾，也沒有用 retry 隱藏失敗。其餘 8 個瀏覽器測試當輪通過，最終修正版本須再經 CI 終態確認。
+文件與畫面 commit `0f6e959` 的重跑曾在 100k 測試遇到預設 5 秒 assertion timeout，當時實際 Worker 已進到 85% 百分位計算，沒有產品錯誤。此完成等待已改為 45 秒；這不是 5 秒效能承諾，也沒有用 retry 隱藏失敗。其餘 8 個瀏覽器測試當輪通過。最新版本以 [Checks 工作流程的終態](https://github.com/njames741/retirement-monte-carlo/actions/workflows/ci.yml) 為準。
 
 研究測試包含種子、年初提領、實付上限、零提領、最後一年耗盡、CPI 購買力、對數／幾何／算術期望、費用只扣一次與 ETF NAV 例外、Stationary 幾何區塊及循環、IID、CPI 同索引、混合欄位月份對齊、GK 嚴格門檻及最後 15 年、動態上下限、分位及 Wilson、可手算網格、VCMM 銜接、CSV 單位／日期／缺月等。
 

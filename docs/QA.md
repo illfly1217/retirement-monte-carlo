@@ -8,6 +8,8 @@
 - 美國 CPI 的 2025-10 缺值保留，測試確認不計算跨缺月的單月變動、區塊在缺口重啟。
 - 完整 MSCI 月序列仍缺可發布資料；股票歷史抽樣停用，issue #4 保持追蹤。沒有把合成 QA 數字當作產品資料。
 
+正式 GitHub Pages 的 v1.2 已另外通過線上 smoke test：台幣預設、美元切換、策略細節、內建 CPI 運算及資料來源表格正常，pageerror 為零。[公開頁面截圖](screenshots/github-pages-v1.2.png)，[發布作業成功](https://github.com/njames741/retirement-monte-carlo/actions/runs/39026526081)。
+
 下方為 v1.1 的原始驗證紀錄，保留其當時結果及限制。
 
 # QA 紀錄（2026-10-17）

@@ -1,3 +1,13 @@
+# v1.2 已更新公開網站（2026-10-17）
+
+- [公開網站](https://njames741.github.io/retirement-monte-carlo/) 已更新，部署來源 commit be2b69ecabae679d65099c43e315a57a6e079dd4。
+- [PR #5](https://github.com/njames741/retirement-monte-carlo/pull/5) 已整合；issues #1、#2、#3 已關閉，#4 保留完整 MSCI 月資料待辦。
+- [Pages 發布作業](https://github.com/njames741/retirement-monte-carlo/actions/runs/39026526081) verify／deploy 成功，沿用現有公開受眾與手動發布流程。
+- 真正公開網址已驗證 v1.2、全新 TWD／3,000 萬、USD／100 萬、策略細節、內建美國 CPI 模擬、資料頁；沒有上傳欄位，pageerror 為零。
+- [公開頁面截圖](screenshots/github-pages-v1.2.png)。未對既有 Sites 操作受眾或部署。
+
+下方為首次發布的歷史紀錄。
+
 # GitHub 保存與 GitHub Pages 發布
 
 使用者於 2026-10-17 明確決定：公開 Repository 可以建立，網站須先本機試用並確認後才公開。此文件取代舊 Sites 雙來源／私人部署流程。

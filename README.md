@@ -1,96 +1,57 @@
 # 全球 ETF 退休研究室
 
-繁體中文的瀏覽器退休蒙地卡羅工具。預設 USD 購買力、100% 全球股票、50 年、4% 初始提領率、10,000 路徑。結果條件於資料、模型與參數，不是預測、保證或個人投資建議。
+繁體中文、瀏覽器本機運算的退休蒙地卡羅工具。[GitHub Pages](https://njames741.github.io/retirement-monte-carlo/)。
+
+目前版本 **1.2**：預設台幣 TWD、資產 3,000 萬、通膨假設 2%；切換美元 USD 套用資產 100 萬、通膨 2.5%。兩者皆預設 100% 全球股票、50 年、4% 初始提領率、10,000 路徑、自訂名目幾何報酬 7% 與年化對數波動 18%。這些是可調整的研究情境，不是預測或個人投資建議。
 
 ## 本機試用
 
-需要 Node.js 22 以上。產品本身沒有 runtime 套件、API 金鑰或運算伺服器；直接啟動不需 npm install。
+需要 Node.js 22 以上，直接啟動不需安裝開發依賴：
 
-```sh
-npm run dev
-# 開啟 http://127.0.0.1:4173/
-```
+    npm run dev
+    # http://127.0.0.1:4173/
 
-保持終端機開著；Ctrl+C 停止。ES Modules 與 module Worker 必須透過 HTTP(S)，不要直接雙擊 dist/index.html。
+ES Modules 與 module Worker 必須透過 HTTP(S)。預覽只監聽 127.0.0.1。測試：
 
-```sh
-npm test
-npm run check
-npm run benchmark -- --swr
-# 安裝開發用瀏覽器測試依賴：
-npm ci
-npx playwright install chromium
-npm run test:browser
-```
+    npm ci
+    npx playwright install chromium
+    npm run check
+    npm test
+    npm run test:browser
 
-在本次 Codex 沙箱內啟動的 listener 無法由瀏覽器連到；相同程式在沙箱外啟動即可使用。這是本次執行權限差異，不需要變更防火牆或對外開放。
+瀏覽器測試使用 /retirement-monte-carlo/ 子路徑，覆蓋桌面、手機、Worker、圖表、策略、幣種、資料與下載。Windows 沙箱可能限制 listener、瀏覽器或 GitHub keyring，應於原生主機環境驗證，無需停用防火牆。
 
-## 使用流程
+## 使用方式
 
-1. 缺歷史資料時可用自訂或 VCMM 參考情境。自訂 CAGR 7%、年化對數波動 18%、通膨 2.5% 都是研究假設。
-2. 設定資產、期間、初始提領率與策略，執行模擬。四策略為固定實質、固定比例、Guyton–Klinger 全股票護欄改編及動態上下限。
-3. 同時查看資產耗盡與生活費風險。固定比例幾乎不歸零，仍可能無法支付生活費。
-4. 圖表支援游標、點擊釘選、左右鍵、年度滑桿、對數刻度、P1/P99 及期末最好／最差樣本。
-5. 比較四策略、比較報酬情境，或以共同路徑掃描 0.1%–15% 提領率，步距 0.1 個百分點。預設成功要求未耗盡且各年生活費至少為初始 80%。
-6. 匯出年度實質 USD 百分位 CSV 或 JSON 研究快照。快照含設定、結果、運算時間、瀏覽器環境；不含原始月序列。快照匯入與疊圖尚未實作。
+1. 選台幣或美元，設定資產、期間及提領率。切換幣種會套用對應資產、通膨及通膨波動預設；不依即時匯率轉換自訂金額。重設保留目前幣種。
+2. 選提領策略。固定實質／固定比例沒有額外細節；GK 自動展開護欄，動態支出自動展開上下限。
+3. 選自訂報酬或內建 VCMM 參考情境。通膨可用固定假設、獨立隨機通膨，或目前幣種的內建 CPI 獨立區塊抽樣。
+4. 執行模擬，同時查看資產耗盡與生活費下降。可比較四策略、兩種報酬情境，或掃描 0.1%–15% 提領率。
+5. 匯出含幣種的年度實質百分位 CSV 或 JSON 研究快照。快照保存設定、資料版本、結果及時間，不含原始 CPI 月序列。
 
-100,000 路徑已在桌面瀏覽器驗證。50 年市場矩陣約 80MB，完整分析另暫用約 81MB 資產／支出矩陣及排序空間；實際峰值更高。低記憶體手機建議 1,000 或 10,000 路徑。停止會終止 Worker，保留上次結果，再次執行會新建 Worker。
+台幣模式假設美元兌台幣匯率不變：股票報酬仍採美元假設，購買力使用台灣 CPI／通膨假設。尚未模擬外匯風險、個人稅或債券。舊版美元參數以 USD 遷移；既有匯入歷史模式改為可用的參數模型，不再讀取舊 IndexedDB 資料。
 
-## 歷史資料與 CSV
+## 專案隨附資料
 
-沒有內建可合法重分發的 MSCI ACWI IMI USD Net Total Return 完整歷史月序列。未虛構、插值、拆分年度報酬或換成其他指數／ETF。歷史模式須自行匯入合法取得的 CSV；缺資料會明示並拒絕執行。
+網頁沒有資料匯入或上傳功能，訪客無須準備檔案；開啟時不呼叫第三方資料服務。
 
-```csv
-date,index,cpi
-```
-
-或
-
-```csv
-date,return,inflation
-```
-
-每月一筆、連續遞增，date 為 YYYY-MM 或有效 YYYY-MM-DD。月報酬與通膨使用小數（5% = 0.05），須大於 −1；指數與 CPI 水準須為正。CPI 可省略；可混合 return+cpi 或 index+inflation。水準需要前一個月，因此任一欄用水準時會消耗首列，兩者對齊同一月份。至少 24 個月可計算報酬，建議 20 年以上。
-
-資料只由瀏覽器 File API 讀取，保存在該來源的 IndexedDB；沒有 CSV 上傳 API。工具不認證資料身份、USD、Net 定義或使用權。指數 Net 總報酬另扣基金費用；ETF NAV 淨總報酬抽樣不重扣費用或追蹤拖累。純參數模型的 CAGR 始終視為基金成本前。
-
-不要將使用者 CSV 放進 dist 或 Git。local-data/ 已忽略；tests/fixtures.mjs 只有明確標示的合成測試數字，產品不使用它們。
-
-## GitHub 與發布
-
-主要開發及版本控制為 **Codex＋[公開 GitHub Repository](https://github.com/njames741/retirement-monte-carlo)**；網站目標為 GitHub Pages。原 bundle 歷史已恢復並保留。
-
-- `.github/workflows/ci.yml`：push main、PR 自動跑語法、32 項 Node／Worker 測試及桌面／手機 Chromium 回歸。
-- `.github/workflows/pages.yml`：只允許手動 workflow_dispatch；main 分支且選擇 publish 才能部署。重新測試後只封裝 dist/。
-- **已依使用者於 2026-10-17 的要求公開網站：[GitHub Pages](https://njames741.github.io/retirement-monte-carlo/)。** 發布 commit `ced5918`，測試及部署均成功；後續推送原始碼只會跑測試，網站仍手動更新。
-- 既有 Sites 維持原私人狀態，本次未修改受眾或部署；`.openai/hosting.json` 僅保留舊 identity，不再作主要發布流程。
-
-子路徑預覽（PowerShell）：
-
-```powershell
-$env:PORT='4175'
-$env:BASE_PATH='/retirement-monte-carlo/'
-npm run dev
-# http://127.0.0.1:4175/retirement-monte-carlo/
-```
-
-新終端機的預設仍是 4173 根路徑。[首次發布紀錄](https://github.com/njames741/retirement-monte-carlo/actions/runs/39024556102) 已成功，正式網址為 https://njames741.github.io/retirement-monte-carlo/；詳細操作及權利盤點見 [RELEASE](docs/RELEASE.md)。
-
-## 架構與研究規格
-
-| 檔案 | 責任 |
+| 資料 | 目前內容 |
 |---|---|
-| dist/engine.js | 純計算、市場生成、提領、百分位、Wilson、網格搜尋 |
-| dist/data.js | CSV 校驗、統計、具日期的 VCMM 常數 |
-| dist/worker.js | Worker 協議、驗證與單一市場矩陣快取 |
-| dist/charts.js | 互動 SVG，沒有第三方圖表 runtime |
-| dist/app.js | 介面、設定、IndexedDB、匯出、取消 |
-| dist/index.html、style.css | 語意化繁中頁面、系統字型、響應式版面 |
-| tests/ | 引擎、正式 Worker 整合、合成 fixtures、瀏覽器回歸 |
-| scripts/ | 預覽、Node 測速、可選單檔產生器 |
+| VCMM | 2026-06-30 模型、2026-07-22 發布的參考區間；十年後銜接為工具自己的研究假設，未重建專有引擎 |
+| 台灣 CPI | 主計總處總指數，1981-01–2026-09，549 筆月水準 |
+| 美國 CPI | BLS CPI-U 全項目未季調，經 FRED CPIAUCNS，1981-01–2026-09，548 筆月水準；2025-10 缺值 |
+| MSCI 完整股票月序列 | **尚未取得可發布資料，股票歷史 Bootstrap／IID 暫不開放**；沒有以替代指數或合成資料冒充 |
 
-`dist/` 就是正式模組化原始碼，無需編譯。可選 `node scripts/standalone.mjs` 產生單檔研究版；不另行維護或作 Pages 輸出。
+CPI 擷取日期 2026-10-17。只用相鄰月份計算月通膨，排除跨缺月變動；區塊遇缺口會重新取樣，不插值、不將兩月當一月。CPI 與股票衝擊獨立，未保留兩者相關性。
 
-詳見 [方法](docs/METHODOLOGY.md)、[來源](docs/SOURCES.md)、[決策](docs/DECISIONS.md)、[QA 與實測](docs/QA.md)、[接續工作](docs/HANDOFF.md)。
+dist/cpi-data.js 保存原始水準、期間、來源及授權連結。維護者以 scripts/update-cpi.ps1 -AsOf YYYY-MM-DD 明確更新並審查資料，網頁不自動執行。合成測試 fixtures 不供產品使用。完整來源見 [SOURCES](docs/SOURCES.md) 及 [第三方說明](docs/THIRD_PARTY_NOTICES.md)。
 
-尚無債券、多資產相關性／再平衡、台灣 CPI、TWD 匯率、個人稅、ETF 分配預扣及交易成本。未來應在市場向量與現金流模組擴充，保留同步月份；不在圖表端另建計算。未指定開源授權；公開 Repository 不代表第三方資料獲授權。
+## 架構與發布
+
+dist/ 是正式原始碼，無需編譯：engine.js 負責計算，worker.js 負責運算及快取，data.js 負責統計及 VCMM，datasets.js 負責 CPI 對齊，currency.js 負責幣種預設，charts.js 負責 SVG，app.js 負責介面與保存。
+
+GitHub 是唯一主要版本來源；既有 Sites 保持原私人狀態，不另同步。main／PR 自動執行 CI；Pages 仍僅由 main 手動觸發 pages.yml、選 publish，不因推送自動部署。發布狀態見 [RELEASE](docs/RELEASE.md)。
+
+可選 node scripts/standalone.mjs 產生單檔於已忽略的 local-data/standalone/，不作 Pages 正式輸出。
+
+方法見 [METHODOLOGY](docs/METHODOLOGY.md)，測試見 [QA](docs/QA.md)，本批工作見 [v1.2 修正紀錄](docs/REVISION_1_2.md)。較早決策與交接紀錄保留歷史狀態，以此版本說明為準。

@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
-import {levelsCSV,returnsCSV,gapCSV} from '../fixtures.mjs';
+
 
 async function parameters(page){
   if(await page.locator('#mobileParams').isVisible()&&!await page.locator('#run').isVisible())await page.locator('#mobileParams').click();
@@ -12,10 +12,8 @@ async function run(page){
   await expect(page.locator('#statusText')).toContainText('計算完成',{timeout:45000});
   await expect(page.locator('#error')).toBeHidden();
 }
-async function upload(page,text){
-  await page.locator('#csvUpload').setInputFiles({name:'SYNTHETIC-qa.csv',mimeType:'text/csv',buffer:Buffer.from(text)});
-}
-test.beforeEach(async({page})=>{await page.goto('./');await expect(page.locator('#statusText')).toBeVisible();});
+// Keep the original USD numerical regression; fresh TWD defaults are covered in revisions.spec.
+test.beforeEach(async({page})=>{await page.goto('./');await expect(page.locator('#statusText')).toBeVisible();await parameters(page);await page.locator('#currency').selectOption('USD');if(await page.locator('#mobileParams').isVisible())await page.locator('#closeParams').click();});
 
 test('default form submits; Pages subpath loads modules and Worker; charts respond',async({page},info)=>{
   const requests=[];page.on('request',r=>requests.push(r.url()));
@@ -57,29 +55,25 @@ test('four strategies share paths; assumption comparison and 150-point search',a
   await expect(page.locator('#swrValue')).toHaveText('1.5%');
 });
 
-test('CSV errors, persistence, paired CPI, IID, VCMM, no-CPI replacement and clear',async({page})=>{
+test('built-in CPI and VCMM work with no file import and persist across reloads',async({page})=>{
   await page.getByRole('button',{name:'資料與方法',exact:true}).click();
-  await page.locator('#datasetName').fill('SYNTHETIC QA ONLY');
-  await upload(page,gapCSV);await expect(page.locator('#error')).toContainText('連續');
-  await upload(page,levelsCSV);await expect(page.locator('#error')).toBeHidden();
-  await expect(page.locator('#datasetSummary')).toContainText('24 個月');
-  await page.reload();await page.getByRole('button',{name:'資料與方法',exact:true}).click();
-  await expect(page.locator('#datasetSummary')).toContainText('SYNTHETIC QA ONLY');
-  await run(page);
-  await parameters(page);await page.locator('#sampling').selectOption('iid');await run(page);
-  await parameters(page);await page.locator('#returnMode').selectOption('vcmm');await page.locator('#inflationModel').selectOption('lognormal');await run(page);
+  await expect(page.locator('input[type="file"]')).toHaveCount(0);
+  await expect(page.locator('#sourceTable tr')).toHaveCount(4);
+  await expect(page.locator('#datasetSummary')).toContainText('BLS');
+  await expect(page.locator('#dataVersion')).toContainText('2026-10-17');
+  await parameters(page);await page.locator('#inflationModel').selectOption('cpi');
+  await expect(page.locator('#inflation')).toBeDisabled();await run(page);
+  await parameters(page);await page.locator('#returnMode').selectOption('vcmm');await run(page);
   await page.getByRole('button',{name:'策略與情境',exact:true}).click();
   await page.locator('#assumptionRun').click();await expect(page.locator('#statusText')).toContainText('計算完成');
-  await expect(page.locator('#assumptionTable tr')).toHaveCount(3);
-  await parameters(page);await page.locator('#inflationModel').selectOption('historical');
-  // Close mobile drawer by choosing the tab via the top bar, then use the visible page.
-  if(await page.locator('#mobileParams').isVisible())await page.locator('#mobileParams').click();
+  await expect(page.locator('#assumptionTable tr')).toHaveCount(2);
+  await parameters(page);await page.locator('#currency').selectOption('TWD');
+  await page.locator('#inflationModel').selectOption('cpi');await run(page);
+  await page.reload();await parameters(page);
+  await expect(page.locator('#currency')).toHaveValue('TWD');await expect(page.locator('#inflationModel')).toHaveValue('cpi');
+  if(await page.locator('#mobileParams').isVisible())await page.locator('#closeParams').click();
   await page.getByRole('button',{name:'資料與方法',exact:true}).click();
-  await upload(page,returnsCSV);
-  await expect(page.locator('#inflationModel')).toHaveValue('constant');
-  await page.locator('#clearData').click();await expect(page.locator('#datasetSummary')).toContainText('沒有匯入');
-  await page.reload();await page.getByRole('button',{name:'資料與方法',exact:true}).click();
-  await expect(page.locator('#datasetSummary')).toContainText('沒有匯入');
+  await expect(page.locator('#datasetSummary')).toContainText('主計總處');
 });
 
 test('downloads contain real results and snapshot omits raw monthly series; stale labels stay coherent',async({page})=>{
@@ -91,7 +85,7 @@ test('downloads contain real results and snapshot omits raw monthly series; stal
   expect(json.result.ruined).toBe(4304);expect(json.config.seed).toBe(741);expect(json.timing.marketCached).toBe(false);expect(JSON.stringify(json)).not.toContain('"returns":');
   await parameters(page);await page.locator('#initial').fill('2000000');await page.locator('#years').fill('40');
   await expect(page.locator('#spendingMetric')).toHaveText('$40,000');await expect(page.locator('#horizon')).toHaveText('50 年');
-  if(await page.locator('#mobileParams').isVisible())await page.locator('#mobileParams').click();
+  if(await page.locator('#mobileParams').isVisible())await page.locator('#closeParams').click();
   await page.getByRole('button',{name:'提領率探索',exact:true}).click();await page.locator('#spendingFloor').fill('70');
   await page.reload();await page.getByRole('button',{name:'提領率探索',exact:true}).click();await expect(page.locator('#spendingFloor')).toHaveValue('70');
 });

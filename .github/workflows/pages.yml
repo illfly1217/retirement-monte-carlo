@@ -1,13 +1,8 @@
-name: Publish GitHub Pages (manual approval)
+name: Build and deploy GitHub Pages
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      confirm_publication:
-        description: 'After local review and content rights review, select publish to make the website public'
-        required: true
-        default: 'no'
-        type: choice
-        options: ['no', 'publish']
 permissions:
   contents: read
 concurrency:
@@ -15,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   verify:
-    if: github.ref == 'refs/heads/main' && inputs.confirm_publication == 'publish'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -31,6 +26,14 @@ jobs:
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: browser-qa
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0
         with:

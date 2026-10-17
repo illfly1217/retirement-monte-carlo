@@ -1,6 +1,8 @@
 # 架構與研究決策（2026-10-17）
 
-最新決策（v1.3）：主要開發與版本控制採 Codex＋公開 GitHub，網站採手動發布的 GitHub Pages。MSCI 歷史月資料已取得並在本地實算；公開程式只保存兩項模型參數、樣本定義、方法及來源摘要，不包含原始月序列。資料來源與使用條件查核見 [MSCI_PARAMETER_RESEARCH](MSCI_PARAMETER_RESEARCH.md)。
+最新發布決策：使用者已授權後續 main 推送自動發布。pages.yml 在 main push 後執行既有完整檢查，deploy 依賴 verify 成功，發布同次推送的 dist/；PR 僅由 ci.yml 檢查，不取得部署權限。保留手動重跑，取消舊發布確認輸入，並避免 main 重複執行兩套相同檢查。此決策取代下方歷史手動限制。
+
+資料與實作決策（v1.3）：主要開發與版本控制採 Codex＋公開 GitHub，網站採 GitHub Pages。MSCI 歷史月資料已取得並在本地實算；公開程式只保存兩項模型參數、樣本定義、方法及來源摘要，不包含原始月序列。資料來源與使用條件查核見 [MSCI_PARAMETER_RESEARCH](MSCI_PARAMETER_RESEARCH.md)。
 
 - 將「參數來源」與「報酬生成方法」分開。MSCI 歷史估計及 VCMM 都可直接搭配參數模型；完整股票月份重抽不阻擋內建參數情境。
 - 介面及 Worker 共用 scenarios.js 正規化內建參數；畫面四捨五入供閱讀，運算及匯出保留完整精度。VCMM 的波動、區域權重及長期銜接明標專案假設。

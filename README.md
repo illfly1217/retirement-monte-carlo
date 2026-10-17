@@ -53,7 +53,7 @@ MSCI 校準由維護者在本機執行 scripts/calibrate-equity.mjs，輸入已�
 
 dist/ 是正式原始碼，無需編譯：engine.js 負責計算，worker.js 負責運算及快取，data.js 負責統計及 VCMM，scenarios.js 統一解析內建／自訂假設，equity-parameters.js 只保存股票校準摘要，datasets.js 負責 CPI 對齊，currency.js 負責幣種預設，charts.js 負責 SVG，app.js 負責介面與保存。
 
-GitHub 是唯一主要版本來源；既有 Sites 保持原私人狀態，不另同步。main／PR 自動執行 CI；Pages 仍僅由 main 手動觸發 pages.yml、選 publish，不因推送自動部署。發布狀態見 [RELEASE](docs/RELEASE.md)。
+GitHub 是唯一主要版本來源；既有 Sites 保持原私人狀態，不另同步。依使用者決定，推送 main 會自動執行 pages.yml：安裝測試依賴、檢查語法、計算測試、桌面／手機瀏覽器測試，全數通過後部署 dist/ 到 GitHub Pages；失敗則保留原線上版本。PR 由 ci.yml 執行相同檢查，不發布；同次 main 推送不重複跑兩套檢查。必要時可手動重跑 Pages 流程。發布狀態見 [RELEASE](docs/RELEASE.md)。
 
 可選 node scripts/standalone.mjs 產生單檔於已忽略的 local-data/standalone/，不作 Pages 正式輸出。
 

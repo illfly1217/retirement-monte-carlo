@@ -1,7 +1,6 @@
 name: Checks
+# Main pushes run the same checks in pages.yml before automatic deployment.
 on:
-  push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:

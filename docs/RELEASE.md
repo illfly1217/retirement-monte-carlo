@@ -1,3 +1,14 @@
+# 後續改為自動 CI／CD（2026-10-17）
+
+使用者已決定採「推送 main → 自動測試 → 通過後自動發布」。這取代下方歷史紀錄的手動發布限制。
+
+- pages.yml 監聽 main 推送，依序完成語法、計算／資料、桌面及手機瀏覽器測試，再上傳 dist/ 並部署。deploy 必須等待 verify 成功，失敗不更新線上網站；只允許 main 發布。
+- ci.yml 保留 PR 與手動檢查。PR 不發布，main 推送由 Pages 流程統一驗證及部署，不重複執行兩套相同測試；兩個流程均保留瀏覽器驗證 artifacts。
+- 若要手動重跑，在 Actions 選 **Build and deploy GitHub Pages**，選 main 執行即可。已移除舊 confirm_publication 選項，因為使用者已授權後續 main 自動發布。
+- 每次完成仍需確認 Actions 的 deploy 成功，並檢查實際公開網址；推送成功本身不表示部署已完成。
+
+下方是過往發布紀錄；當時的手動流程不再適用於後續 main 推送。
+
 # v1.3 已發布到 GitHub Pages（2026-10-17）
 
 - Issues #4、#7、#8 的本地校準、內建數值唯讀、自訂草稿、模型狀態與匯出來源已完成，詳見 [REVISION_1_3](REVISION_1_3.md)。

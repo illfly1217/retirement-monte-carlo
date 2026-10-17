@@ -6,7 +6,7 @@
 
 Repository：[njames741/retirement-monte-carlo](https://github.com/njames741/retirement-monte-carlo)。原 bundle 的完整歷史保留於 main。本機 origin 指向此 repo。不要 force push；其他環境開工先 fetch 並整合。
 
-Pages 尚未啟用／部署，沒有可交付的已上線網址。預期 URL 為 `https://njames741.github.io/retirement-monte-carlo/`，部署成功前不要宣稱可用。既有 Sites identity 保留於 .openai/hosting.json；本次不操作該 Site，原私人受眾不變。
+使用者於 2026-10-17 進一步要求透過 GitHub.io 開啟試用，已授權本次公開發布。正式網址：[https://njames741.github.io/retirement-monte-carlo/](https://njames741.github.io/retirement-monte-carlo/)。發布 commit `ced591822f39fab8eaeb6e8c2a0ffb9e0c8572a1`；[Actions run](https://github.com/njames741/retirement-monte-carlo/actions/runs/39024556102) 的 verify 與 deploy 均成功。既有 Sites identity 保留於 .openai/hosting.json；本次不操作該 Site，原私人受眾不變。
 
 ## 開發與檢查
 
@@ -22,9 +22,9 @@ CI 使用 Ubuntu、Node 24、Chromium，另有 Pixel 7 viewport 模擬。瀏覽�
 
 改變引擎再跑 `npm run benchmark -- --swr`，並在實際瀏覽器測時。請勿把 Node 結果稱為瀏覽器結果。
 
-## 第一次公開網站：等待使用者確認
+## 手動發布程序（第一次已完成）
 
-先完成本機試用及內容權利確認，再執行：
+第一次已依使用者要求完成；後續仍維持手動發布，並保留權利盤點與測試程序：
 
 1. Repository Settings → Pages → Build and deployment → Source 選 **GitHub Actions**。
 2. Actions → **Publish GitHub Pages (manual approval)** → Run workflow。
@@ -46,3 +46,9 @@ CI 使用 Ubuntu、Node 24、Chromium，另有 Pixel 7 viewport 模擬。瀏覽�
 ## 回復與維護
 
 若已公開後需要回復版本，以正常 revert commit 或手動選定經檢查的 main 版本重新發布，保留完整歷史。網站與本機各 origin 的 IndexedDB/localStorage 分離，GitHub Pages 不會自動帶入本機 CSV。每次發布都要由訪客自行匯入合法資料。
+
+## 公開網址驗證
+
+2026-10-17 在真正的 GitHub Pages URL 啟動 50 年 × 10,000 路徑，Worker 完成約 0.52 秒，耗盡機率 43.0%、雙重成功率 57.0%，與同 seed 的本機結果一致。P1/P99、對數刻度、年度滑桿及 CSV 下載可用，console 無 error／warn。[公開頁面畫面](screenshots/github-pages.png)。
+
+本次未取得或聲稱新增 MSCI／Vanguard 個別資料授權；仍未散布完整月序列或官方完整表格。既有少量具來源引用及限制聲明維持不變。

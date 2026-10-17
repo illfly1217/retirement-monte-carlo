@@ -2,7 +2,7 @@
 
 ## 結論
 
-本機可試用；完整 Git 歷史與原始碼已保存至公開 GitHub。**GitHub Pages 尚未啟用或部署**，等待使用者試用及公開確認。既有 Sites 本次未操作。
+本機可試用；完整 Git 歷史與原始碼已保存至公開 GitHub。**已依使用者進一步要求公開於 [GitHub Pages](https://njames741.github.io/retirement-monte-carlo/)**。既有 Sites 本次未操作。
 
 ## 自動化驗證
 
@@ -68,10 +68,18 @@
 
 - 沙箱內 listener 雖顯示啟動，fetch 回 EACCES／逾時、瀏覽器無法連到；沙箱外相同 server 在 127.0.0.1 成功。GitHub CLI 憑證也需沙箱外讀 keyring，原登入仍有效。
 - 本次 CSV「upload」是工具對本機選檔的名稱；產品使用 File API、IndexedDB，沒有 POST／上傳 API，也沒有將測試資料傳往網際網路。
-- Pages 未啟用，API 讀取回 404，未觸發任何 deploy；只推 GitHub 原始碼並跑 Checks。手動部署工作流程已備妥，但真實公開 Pages 網址驗證要等使用者確認後進行。
+- 前階段 Pages API 回 404；本次依使用者要求啟用 build_type=workflow，[發布 run](https://github.com/njames741/retirement-monte-carlo/actions/runs/39024556102) 成功。真正公開網址的 10k 模擬、P1/P99、對數、年度滑桿、CSV 下載均通過，console 無 error／warn；後續仍手動發布。
 - 未取得 MSCI 完整可重分發月資料。無債券、多資產、台灣 CPI、TWD、個人稅、快照匯入；Vanguard 參考引用方式仍需公開前確認（見 THIRD_PARTY_NOTICES）。
 - 未驗證實體手機 100k 記憶體峰值及跨瀏覽器；可選單檔 HTML 也沒有另做瀏覽器驗證。主要可用產品為模組化 dist/。
 
 ## 畫面證據
 
 [桌面完整畫面](screenshots/desktop.png) · [桌面預覽](screenshots/desktop-preview.png) · [手機完整畫面](screenshots/mobile.png)
+
+## 首次公開發布後驗證
+
+- 日期：2026-10-17；部署 commit `ced5918`，verify／deploy 均成功。
+- 公開網址：https://njames741.github.io/retirement-monte-carlo/
+- 50 年 × 10k，seed 741，瀏覽器約 0.52 秒；耗盡 43.0%、雙重成功 57.0%。這是另外一次公開頁面 smoke test，未取代前述完整效能紀錄。
+- module Worker、互動圖表與 CSV 下載正常；沒有重新匯入或上傳任何歷史 CSV。
+- [公開頁面畫面](screenshots/github-pages.png)。

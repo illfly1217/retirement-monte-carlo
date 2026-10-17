@@ -1,6 +1,6 @@
 # 接續工作（2026-10-17）
 
-最新使用者決策已取代先前 Sites 私人部署優先的要求：主要開發採 Codex＋公開 GitHub，網站採 GitHub Pages；先本機試用、獲確認後才公開網站。既有 Sites 不改受眾、不另建、不繼續部署。
+最新使用者決策已取代先前 Sites 私人部署優先的要求：主要開發採 Codex＋公開 GitHub，網站採 GitHub Pages；原先先本機試用的門檻已由本次「用 GitHub.io 開起來看」要求更新，網站已公開於 [https://njames741.github.io/retirement-monte-carlo/](https://njames741.github.io/retirement-monte-carlo/)。既有 Sites 不改受眾、不另建、不繼續部署。
 
 ## 已完成
 
@@ -19,10 +19,10 @@ CLI 在沙箱內讀不到有效 GitHub 憑證，沙箱外的 `gh auth status` �
 
 ## 後續順序
 
-1. 先讓使用者試用本機版本，收集修正；一般修正繼續測試並 push GitHub。
-2. **沒有使用者的公開網站確認，不執行 Pages workflow、不啟用 Pages。** 推送 main 不會部署。
-3. 公開前閱讀 RELEASE 與 THIRD_PARTY_NOTICES，尤其 Vanguard 引用方式尚未取得個別再呈現許可。不要把公開可讀視為取得全部重分發權。
-4. 確認後才將 Pages source 設 GitHub Actions，手動 Run workflow，confirm_publication=publish，檢查部署終態及實際網址。
-5. 若使用者另行同意自動發布，才新增 push main trigger。GitHub source 與既有 Sites 不會自動同步。
+1. 本次公開發布已完成，commit `ced5918`；[發布工作流程](https://github.com/njames741/retirement-monte-carlo/actions/runs/39024556102) 成功，已在實際網址驗證 Worker、圖表及下載。
+2. 依使用者回饋繼續修正、測試並 push GitHub；Pages 仍只手動 workflow_dispatch，不因 push 自動更新。
+3. 既有少量引用、來源及第三方權利限制見 RELEASE 與 THIRD_PARTY_NOTICES；沒有因網站公開而宣稱取得額外資料授權。
+4. 要更新網站，從 main 手動 Run workflow，confirm_publication=publish；記錄成功部署的 SHA 與 run URL。
+5. 若使用者另行同意自動發布，才新增 push main trigger。既有 Sites 不在此發布流程中。
 
 MSCI 完整月序列仍缺，不得造資料。保留可用的自訂與 VCMM 參考情境。單檔版僅由模組生成；模組化 dist/ 為唯一主要來源。

@@ -62,7 +62,7 @@ date,return,inflation
 
 - `.github/workflows/ci.yml`：push main、PR 自動跑語法、32 項 Node／Worker 測試及桌面／手機 Chromium 回歸。
 - `.github/workflows/pages.yml`：只允許手動 workflow_dispatch；main 分支且選擇 publish 才能部署。重新測試後只封裝 dist/。
-- **目前網站尚未發布，須先由擁有者本機試用確認。** Pages 未啟用，推送原始碼只會跑測試。
+- **已依使用者於 2026-10-17 的要求公開網站：[GitHub Pages](https://njames741.github.io/retirement-monte-carlo/)。** 發布 commit `ced5918`，測試及部署均成功；後續推送原始碼只會跑測試，網站仍手動更新。
 - 既有 Sites 維持原私人狀態，本次未修改受眾或部署；`.openai/hosting.json` 僅保留舊 identity，不再作主要發布流程。
 
 子路徑預覽（PowerShell）：
@@ -74,7 +74,7 @@ npm run dev
 # http://127.0.0.1:4175/retirement-monte-carlo/
 ```
 
-新終端機的預設仍是 4173 根路徑。預期公開網址只有在實際部署成功後才能當作已上線；詳細操作及授權檢查見 [RELEASE](docs/RELEASE.md)。
+新終端機的預設仍是 4173 根路徑。[首次發布紀錄](https://github.com/njames741/retirement-monte-carlo/actions/runs/39024556102) 已成功，正式網址為 https://njames741.github.io/retirement-monte-carlo/；詳細操作及權利盤點見 [RELEASE](docs/RELEASE.md)。
 
 ## 架構與研究規格
 

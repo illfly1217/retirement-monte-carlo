@@ -11,7 +11,7 @@
 7. **網格搜尋**：動態規則非嚴格單調，使用0.1百分點網格及共同隨機數，顯示逐點Wilson下限與範圍上界，避免二分搜尋保證假象。
 8. **路徑快取**：重用同一市場矩陣比較策略、提領率；取消直接terminate Worker。主執行緒只接收摘要而非100k條全路徑。
 9. **資料本機保存**：IndexedDB保存使用者CSV，localStorage保存參數。無CSV上傳API；原始數列不寫入Git、Pages 封裝或匯出研究快照。
-10. **版本保存與發布分離**：原 bundle 歷史已恢復，公開 GitHub 是唯一主要版本來源；main push 與 PR 自動執行 CI。Pages 僅手動觸發，選 publish、通過檢查後才可部署 dist/。使用者本機確認前不啟用 Pages。既有 Sites 受眾保持私人，本次不操作，不採雙來源同步。
+10. **版本保存與發布分離**：原 bundle 歷史已恢復，公開 GitHub 是唯一主要版本來源；main push 與 PR 自動執行 CI。Pages 僅手動觸發，選 publish、通過檢查後才可部署 dist/。原先須先本機確認；使用者後續要求透過 GitHub.io 觀看，已依此啟用並成功公開，後續仍手動發布。既有 Sites 受眾保持私人，本次不操作，不採雙來源同步。
 11. **完整子路徑回歸**：預覽支援 BASE_PATH，CI 在 /retirement-monte-carlo/ 真正啟動 Chromium，驗證相對資源、ES Modules、module Worker 與主要操作。
 12. **系統字型**：移除外部字型下載；產品的文字及 SVG 由本機資源與系統字型呈現，不需第三方請求。
 13. **數值失效明示**：CSV 水準換算及跨年累積超出 Float64 可用範圍時拒絕結果，不將 NaN／Infinity 畫成研究結論。快取命中仍驗證全部設定。

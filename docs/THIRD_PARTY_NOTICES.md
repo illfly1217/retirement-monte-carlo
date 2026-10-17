@@ -17,3 +17,7 @@
 [Vanguard 官方預測頁](https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-return-forecasts.html) 與[地區數值表](https://www.vanguardmexico.com/en/home/insights/economic-market-outlook/vanguard-capital-markets-model-forecasts-2026) 說明應同時提供揭露、來源及方法背景。本版附原始連結與自行改寫的限制說明，不宣稱因此取得全面重製權；尚無 Vanguard 個別書面再呈現許可。公開網站前由擁有者確認引用方式，必要時改成來源連結及使用者自行輸入錨點。
 
 本工具不是 Vanguard 或 MSCI 官方產品，也未獲其認可。Vanguard 的預測具假設性、非實際投資結果、非保證，會隨模型日期改變。其資產預測包含波動及相關性等分布資訊；本工具僅取區間中點作為名目 USD 幾何漂移錨點，未重建原分布。預測未扣通膨、稅及基金費用；本工具另外處理費用與購買力。近端十年後的銜接是自訂研究假設。
+
+## 公開狀態更新
+
+2026-10-17 依擁有者進一步要求，公開既有研究工具於 GitHub Pages。此動作沒有取得或新增第三方個別書面授權；本清單列出的資料、引用範圍與限制持續適用。沒有將使用者本機 CSV、完整月序列或官方完整表格加入部署。

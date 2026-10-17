@@ -77,3 +77,8 @@ test('GK search scans every grid point even when success increases locally',()=>
   const oracle=Array.from({length:150},(_,i)=>(i+1)/1000).filter(rate=>evaluate({...c,rate},m,{summaryOnly:true}).successCI[0]>=c.successTarget).at(-1);
   assert.equal(r.rate,oracle);near(r.rate,.033);
 });
+test('Multi-year overflow cannot leak NaN or Infinity into research summaries',()=>{
+  const c=config({years:5,rate:0});
+  assert.throws(()=>evaluate(c,flat(c,1e100)),/數值範圍/);
+  assert.throws(()=>evaluate(c,flat(c,1,1e-100)),/數值範圍/);
+});

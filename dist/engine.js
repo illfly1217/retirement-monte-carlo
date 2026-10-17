@@ -83,12 +83,14 @@ export function evaluate(c,market,{summaryOnly=false,progress=()=>{}}={}){
     if(assets)assets[0][p]=wealth;
     for(let y=0;y<T;y++){
       const desired=wealth>0?withdrawal(c,{year:y,wealth,price,previous,previousPrice,previousReturn}):0;
+      if(!Number.isFinite(desired))throw Error('支出超出數值範圍；請檢查資料與假設。');
       const actual=Math.min(wealth,Math.max(0,desired)),real=actual/price;
       if(spends)spends[y][p]=real;
       if(base>0)minRatio=Math.min(minRatio,real/base);
       if(!ruinYear&&((wealth-actual)<=c.initial*1e-12||actual+1e-8<desired)){ruinYear=y+1;}
       const k=p*T+y;wealth=Math.max(0,(wealth-actual)*market.factors[k]);
       previousReturn=market.factors[k]-1;previous=actual;previousPrice=price;price*=market.inflation[k];
+      if(!Number.isFinite(wealth/price)||!Number.isFinite(price)||price<=0)throw Error('累積資產或物價超出數值範圍；請檢查資料與假設。');
       if(assets)assets[y+1][p]=wealth/price;
     }
     terminal[p]=wealth/price;minRatioSum+=minRatio;
@@ -109,7 +111,7 @@ export function evaluate(c,market,{summaryOnly=false,progress=()=>{}}={}){
   out.assetPercentiles=percentiles(assets);progress(.85,'計算資產百分位數');
   out.spendingPercentiles=percentiles(spends).map(x=>({...x,year:x.year+1}));
   out.samples={worst:{id:worstId,assets:assets.map(v=>v[worstId]),spending:spends.map(v=>v[worstId])},best:{id:bestId,assets:assets.map(v=>v[bestId]),spending:spends.map(v=>v[bestId])}};
-  const sorted=terminal.slice().sort();out.terminal=qs.map(q=>quantile(sorted,q));out.terminalMean=terminal.reduce((a,b)=>a+b,0)/N;
+  const sorted=terminal.slice().sort();out.terminal=qs.map(q=>quantile(sorted,q));out.terminalMean=terminal.reduce((a,b)=>a+b/N,0);
   // Histogram uses log1p on real terminal wealth, retaining zero outcomes in first bin.
   const max=Math.log1p(sorted[N-1]/c.initial),bins=Array.from({length:32},(_,i)=>({low:c.initial*Math.expm1(max*i/32),high:c.initial*Math.expm1(max*(i+1)/32),count:0}));
   for(const v of terminal){const i=max?Math.min(31,Math.floor(Math.log1p(v/c.initial)/max*32)):0;bins[i].count++;}out.histogram=bins;

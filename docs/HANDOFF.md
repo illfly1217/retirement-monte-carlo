@@ -1,26 +1,28 @@
-# 接續本次工作
+# 接續工作（2026-10-17）
 
-本專案不是只含範例：已完成ES Modules應用、Web Worker蒙地卡羅引擎、四提領策略、CSV匯入、互動SVG、比較、提領率搜尋、24項測試、效能腳本與方法文件。但**尚未完成瀏覽器QA、GitHub與Sites部署**，原因是命令環境網路受限。
+最新使用者決策已取代先前 Sites 私人部署優先的要求：主要開發採 Codex＋公開 GitHub，網站採 GitHub Pages；先本機試用、獲確認後才公開網站。既有 Sites 不改受眾、不另建、不繼續部署。
 
-## 環境需要
+## 已完成
 
-- 命令執行環境需允許正常DNS解析及HTTPS連出`git.chatgpt-team.site:443`，供官方Sites source helper推送原始碼。
-- localhost listener與client互通，或使用平台支援的preview forwarding，供瀏覽器QA。
-- 不需要公開網站、不需要停用防火牆、不需要在程式碼保存token。
-- GitHub connector可讀寫既有repo，但本回合沒有create-repo操作。本機GitHub CLI需使用者在可信環境重新登入；其驗證可與Sites部署分別處理。
+- 從 retirement-history.bundle 恢復原 main commit `25195866c373da1412da5778890061be3c3d5e65`，工作檔與歷史一致，未覆蓋現有檔案。
+- 建立並推送 [njames741/retirement-monte-carlo](https://github.com/njames741/retirement-monte-carlo)，保留原 commit；origin 指向 GitHub。
+- 修正預設資產的 HTML step 錯誤、舊結果標籤、年度範圍標籤、CSV 換檔殘留錯誤／通膨模式、研究條件保存及 Worker 快取驗證。
+- 32 項 Node／正式 Worker 測試通過；包含非單調 GK 網格、混合欄位 CPI 月份對齊、費用、算術期望與通膨。
+- 真正桌面瀏覽器完成主要操作、10k／100k、取消重跑、下載與本機資料保存／清除；手機使用 390×844 viewport 驗證，非真實手機效能。見 QA。
+- GitHub Actions：自動 CI 與獨立手動 Pages 工作流程。Pages 子路徑已於本機驗證。
 
-## 固定identity
+## 環境診斷
 
-Project ID以`.openai/hosting.json`為準，已建立，不可再create_site。預期URL在Sites回應中為`https://global-retirement-lab.njames741.chatgpt.site`，但它**不是已部署成功的網址**。受眾保持owner-private。
+CLI 在沙箱內讀不到有效 GitHub 憑證，沙箱外的 `gh auth status` 正常，無須使用者重新登入。沙箱內啟動的 server 顯示監聽但跨程序連線失敗；沙箱外啟動相同 server 成功。不要再把舊環境網路限制視為未驗證的永久障礙，不需要停用防火牆。
 
-## 給下一個Work／Codex agent的指示
+`npm run dev` 是本機根路徑試用；`BASE_PATH=/retirement-monte-carlo/` 是 Pages 路徑驗證。所有 listener 只監聽 127.0.0.1。
 
-讀README與docs。從完整專案包恢復本機檔案／Git，不要用空的Sites來源覆蓋它。先get_site確認owner-private，再取得新的source write credential（舊credential約10分鐘到期，未寫入檔案）。使用Sites skill的source helper開啟／封裝，credential僅透過stdin傳入，不寫檔、不放命令參數、不列印。
+## 後續順序
 
-Windows PTY本次需將JSON送入後再單獨送Return，才會觸發隱藏stdin讀取。此前失敗的helper已退出，不是仍待執行的部署。若helper再次回網路拒絕，先處理環境，不要改應用或偽造pushed SHA。
+1. 先讓使用者試用本機版本，收集修正；一般修正繼續測試並 push GitHub。
+2. **沒有使用者的公開網站確認，不執行 Pages workflow、不啟用 Pages。** 推送 main 不會部署。
+3. 公開前閱讀 RELEASE 與 THIRD_PARTY_NOTICES，尤其 Vanguard 引用方式尚未取得個別再呈現許可。不要把公開可讀視為取得全部重分發權。
+4. 確認後才將 Pages source 設 GitHub Actions，手動 Run workflow，confirm_publication=publish，檢查部署終態及實際網址。
+5. 若使用者另行同意自動發布，才新增 push main trigger。GitHub source 與既有 Sites 不會自動同步。
 
-執行`npm test`、`npm run check`，在可連的瀏覽器驗證及測10k/100k。修正後更新QA.md。source helper成功後以其回傳project_id、commit_sha、archive直接呼叫owner-private保存部署操作，記錄saved version與deployment ID，poll到終態。不要因權限不足改成public。
-
-GitHub repo建立後，從本機Git新增`github`remote推送；保持Site的來源remote不變。README已有命令。若Github repo在外部已有變更，先整合再發布，不force push。
-
-Standalone生成器`node scripts/standalone.mjs`從相同production程式碼產生可下載的單檔HTML，不是未來的主要開發分支。修改模組後重新生成，不手動改生成檔。
+MSCI 完整月序列仍缺，不得造資料。保留可用的自訂與 VCMM 參考情境。單檔版僅由模組生成；模組化 dist/ 為唯一主要來源。

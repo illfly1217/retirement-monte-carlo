@@ -1,33 +1,48 @@
-# 維護與發布作業
+# GitHub 保存與 GitHub Pages 發布
 
-## 第一版實際來源
+使用者於 2026-10-17 明確決定：公開 Repository 可以建立，網站須先本機試用並確認後才公開。此文件取代舊 Sites 雙來源／私人部署流程。
 
-`.openai/hosting.json`保存project_id與static.directory=dist。這個identity必須維持，未來才能部署到同一Site網址。受眾維持owner-private；公開網站需使用者明確授權及資料權利確認。
+## 目前保存與發布狀態
 
-Sites儲存與GitHub是不同來源系統，**沒有自動同步**。預定由Sites source helper將完整專案commit/push至Site的來源Git，然後從同一SHA封裝靜態輸出並保存部署版本。本次source helper的遠端操作被命令環境網路限制阻擋，尚未完成，請見HANDOFF.md。部署tar應只有正式靜態輸出及hosting manifest；完整README/tests/docs必須在來源Git中。
+Repository：[njames741/retirement-monte-carlo](https://github.com/njames741/retirement-monte-carlo)。原 bundle 的完整歷史保留於 main。本機 origin 指向此 repo。不要 force push；其他環境開工先 fetch 並整合。
 
-## 目前GitHub限制
+Pages 尚未啟用／部署，沒有可交付的已上線網址。預期 URL 為 `https://njames741.github.io/retirement-monte-carlo/`，部署成功前不要宣稱可用。既有 Sites identity 保留於 .openai/hosting.json；本次不操作該 Site，原私人受眾不變。
 
-GitHub連接器已確認使用者njames741，但沒有create_repository工具，預期repo讀取回404；本機CLI登入失效。不能冒稱已建立repo或已備份到GitHub。README提供有效登入後的建立私有repo與新增github remote命令。
+## 開發與檢查
 
-## 後續Work操作
+```sh
+npm ci
+npm test
+npm run check
+npx playwright install chromium
+npm run test:browser
+```
 
-1. 指定同一個Site／網址，先get_site確認identity及owner-private。
-2. 使用Sites來源寫入credential與官方site-workflow helper開啟現有來源；不要另建Site。
-3. 若GitHub已存在變更，先fetch/merge其分支，解決衝突，再編輯。不要覆蓋另一邊未整合的版本。
-4. 適當測試：`npm test`、`npm run check`；變更引擎時再測速及瀏覽器QA。
-5. 更新方法、資料截至日期與測試紀錄；沒有必要不更改資料假設。
-6. source helper保存推送，從同一commit封裝；owner-private用save_version_and_deploy_private；記錄回傳version_id與deployment_id。
-7. GitHub可用時把同一commit推到github main（非任意舊分支），確認兩端HEAD一致；若任一步失敗，明確註記哪端尚未同步。
+CI 使用 Ubuntu、Node 24、Chromium，另有 Pixel 7 viewport 模擬。瀏覽器測試實際服務 `/retirement-monte-carlo/`，檢查 Worker、表單、圖表、CSV、保存、比較、搜尋與下載。只有開發測試需要 Playwright，正式網站沒有該套件。
 
-## 後續Codex操作
+改變引擎再跑 `npm run benchmark -- --swr`，並在實際瀏覽器測時。請勿把 Node 結果稱為瀏覽器結果。
 
-clone `njames741/retirement-monte-carlo`，開branch持續開發，不需要重新建環境或安裝依賴。先看README、METHODOLOGY與DECISIONS，再改引擎。若先前Work有新發布，先取回Sites來源並整合才開工。Codex環境若沒有Sites能力，先推GitHub，再讓Work在同一Site載入指定commit並部署；不假設GitHub push會自動更新Site。
+## 第一次公開網站：等待使用者確認
 
-## 公開前
+先完成本機試用及內容權利確認，再執行：
 
-確認MSCI等第三方月序列、衍生資料與Vanguard預測引用的公開使用權；本機CSV不公開不等於所有內容自動獲准。確認使用者同意公開，才變更audience，保持同project_id，不因公開需求另建脫節副本。未完成權利確認時維持private。
+1. Repository Settings → Pages → Build and deployment → Source 選 **GitHub Actions**。
+2. Actions → **Publish GitHub Pages (manual approval)** → Run workflow。
+3. 選 main，confirm_publication 選 **publish**；預設 no 會略過部署。
+4. 工作流程先重跑 Node 與瀏覽器檢查，再將 **dist/** 上傳為 Pages artifact，透過 OIDC 部署，無自建長期 deploy token。
+5. 檢查 deploy job 成功、回傳的 page_url 與實際公開頁面，測 module Worker、圖表及結果下載，記錄部署 commit／run URL。
 
-## 測試與效能
+工作流程僅 workflow_dispatch，沒有 push、schedule 或 workflow_run 部署觸發。即使 CI 通過也不會自動公開。若另獲使用者同意，才可改成 main push 自動發布；仍應保留測試依賴。
 
-`docs/benchmark-node.json`為實際本機Node測速，不冒充瀏覽器結果。`docs/QA.md`記錄瀏覽器操作與可驗證範圍。相同seed便於回歸比對，修改PRNG或月順序要當作模型版本變更。
+## 權利與封裝檢查
+
+- dist 僅含原創 HTML/CSS/JS、.nojekyll 及原創第三方來源說明；沒有 MSCI 或 ETF 月數列、CPI 資料、第三方圖表、logo、外部字型或 API 憑證。
+- local-data/、.env、bundle、ZIP、test-results/、node_modules/ 不進版控或 Pages artifact。
+- tests/fixtures.mjs 為合成、可手算的測試數字，不會被部署為市場資料。
+- 預設費用 0.06% 是版本化假設；總報酬含股息。ETF NAV 抽樣不重扣成本。
+- Vanguard 只引用少量公開數值、改寫的方法摘要與原始連結，沒有複製完整表格、圖片或其專有模型。這不等於取得其個別再呈現許可；請參照 [第三方清單](THIRD_PARTY_NOTICES.md) 完成擁有者確認，必要時改為連結及使用者輸入錨點。
+- 尚未選定原創程式的開源授權；不要擅自替擁有者加入 MIT 等授權。
+
+## 回復與維護
+
+若已公開後需要回復版本，以正常 revert commit 或手動選定經檢查的 main 版本重新發布，保留完整歷史。網站與本機各 origin 的 IndexedDB/localStorage 分離，GitHub Pages 不會自動帶入本機 CSV。每次發布都要由訪客自行匯入合法資料。

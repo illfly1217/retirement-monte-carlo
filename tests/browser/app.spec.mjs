@@ -17,12 +17,14 @@ test.beforeEach(async({page})=>{await page.goto('./');await expect(page.locator(
 
 test('default form submits; Pages subpath loads modules and Worker; charts respond',async({page},info)=>{
   const requests=[];page.on('request',r=>requests.push(r.url()));
+  await page.reload();
   await parameters(page);
   expect(await page.locator('#parameters').evaluate(e=>e.checkValidity())).toBe(true);
   await run(page);
   await expect(page.locator('#ruinMetric')).toHaveText('43.0%');
   await expect(page.locator('#lifestyleMetric')).toHaveText('57.0%');
   expect(requests.some(url=>url.endsWith('/retirement-monte-carlo/worker.js'))).toBe(true);
+  for(const file of ['app.js','engine.js','data.js','charts.js','style.css'])expect(requests.some(url=>url.endsWith('/retirement-monte-carlo/'+file))).toBe(true);
   for(const url of requests.filter(x=>x.startsWith('http://127.0.0.1:4175')))expect(new URL(url).pathname.startsWith('/retirement-monte-carlo/')).toBe(true);
   await page.locator('#tails').check();await page.locator('#logScale').check();
   await page.locator('#yearInspect').fill('30');

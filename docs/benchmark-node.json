@@ -1,5 +1,5 @@
 {
-  "executed": "2026-10-17T09:52:49.504Z",
+  "executed": "2026-10-17T10:06:56.727Z",
   "environment": "Node on development host, not a browser claim",
   "reports": [
     {
@@ -8,9 +8,9 @@
       "paths": 10000,
       "years": 50,
       "model": "parametric",
-      "marketMs": 230.7823,
-      "evaluationMs": 64.221,
-      "totalMs": 295.0033,
+      "marketMs": 228.1711,
+      "evaluationMs": 61.776400000000024,
+      "totalMs": 289.9475,
       "ruin": 0.4304,
       "lifestyle": 0.5696,
       "seed": 741
@@ -21,9 +21,9 @@
       "paths": 100000,
       "years": 50,
       "model": "parametric",
-      "marketMs": 2288.2558,
-      "evaluationMs": 550.0239000000001,
-      "totalMs": 2838.2797,
+      "marketMs": 2282.5614,
+      "evaluationMs": 626.2388999999998,
+      "totalMs": 2908.8003,
       "ruin": 0.4295,
       "lifestyle": 0.5705,
       "seed": 741
@@ -32,7 +32,7 @@
       "operation": "150-point grid search",
       "paths": 10000,
       "years": 50,
-      "elapsedMs": 705.7728000000006,
+      "elapsedMs": 1226.9764000000005,
       "rate": 0.015
     }
   ]

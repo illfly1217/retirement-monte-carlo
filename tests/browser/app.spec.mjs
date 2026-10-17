@@ -7,7 +7,9 @@ async function parameters(page){
 }
 async function run(page){
   await parameters(page);await page.locator('#run').click();
-  await expect(page.locator('#statusText')).toContainText('計算完成');
+  // This is a completion assertion, not a 5-second performance budget.
+  // A full 100k run on shared CI hosts can exceed the default assertion timeout.
+  await expect(page.locator('#statusText')).toContainText('計算完成',{timeout:45000});
   await expect(page.locator('#error')).toBeHidden();
 }
 async function upload(page,text){

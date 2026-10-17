@@ -9,7 +9,9 @@
   <form id="parameters">
   <fieldset id="fields">
     <div class="section-label">01 <span>退休計畫</span></div>
-    <label>初始資產 <span>USD</span><input id="initial" type="number" value="1000000" min="1" max="1000000000000" step="1"></label>
+    <label>計畫幣種<select id="currency"><option value="TWD" selected>台幣 TWD</option><option value="USD">美元 USD</option></select></label>
+    <label>初始資產 <span id="initialCurrency">TWD</span><input id="initial" type="number" value="30000000" min="1" max="1000000000000" step="1"></label>
+    <p id="currencyHint" class="hint">切換幣種會套用該幣種的資產與通膨預設。台幣模式假設美元兌台幣匯率不變。</p>
     <div class="field-pair"><label>退休年數<input id="years" type="number" value="50" min="1" max="60"></label><label>初始提領率 <span>%</span><input id="rate" type="number" value="4" min="0" max="20" step="0.1"></label></div>
     <label>提領策略<select id="strategy"><option value="fixed">固定實質金額</option><option value="percent">固定資產比例</option><option value="gk">Guyton–Klinger 護欄</option><option value="dynamic">動態支出上下限</option></select></label>
     <p id="strategyHint" class="hint"></p>
@@ -24,14 +26,14 @@
     <div class="field-pair"><label>基金年費用 <span>%</span><input id="fee" type="number" value="0.06" min="0" max="5" step="0.01"></label><label>額外追蹤拖累 <span>%</span><input id="drag" type="number" value="0" min="-5" max="5" step="0.01"></label></div>
     <p class="hint">總報酬含股息，不再加股息。ETF 淨報酬資料不重扣年費與拖累。</p>
     <div class="section-label">03 <span>通膨與運算</span></div>
-    <label>美元購買力基準<select id="inflationModel"><option value="constant">固定通膨假設</option><option value="lognormal">隨機通膨（獨立）</option><option value="historical">匯入美國 CPI 同步抽樣</option></select></label>
+    <label><span id="purchasingPowerLabel">台幣購買力基準</span><select id="inflationModel"><option value="constant">固定通膨假設</option><option value="lognormal">隨機通膨（獨立）</option><option value="historical">匯入美國 CPI 同步抽樣</option></select></label>
     <div class="field-pair"><label>年通膨 <span>%</span><input id="inflation" type="number" value="2.5" min="-5" max="20" step="0.1"></label><label id="inflationVolField" hidden>通膨波動 <span>%</span><input id="inflationVol" type="number" value="1.5" min="0" max="20" step="0.1"></label></div>
     <label>模擬路徑<select id="paths"><option value="1000">1,000 · 快速探索</option><option value="10000" selected>10,000 · 標準分析</option><option value="100000">100,000 · 精確模式</option></select></label>
     <label>隨機種子<input id="seed" type="number" value="741" min="0" max="4294967295"></label>
     <div class="aside-actions"><button class="primary" id="run" type="submit">執行模擬 <span>↗</span></button><button id="reset" type="button" class="quiet">重設參數</button></div>
   </fieldset>
   </form>
-  <div class="aside-footer">瀏覽器本機運算 · 無運算伺服器<br>USD · 年初提領 · 年度檢視</div>
+  <div class="aside-footer">瀏覽器本機運算 · 無運算伺服器<br><span id="planCurrency">TWD</span> · 年初提領 · 年度檢視</div>
 </aside>
 <main>
   <header class="topbar"><span>RESEARCH / <b>MONTE CARLO</b></span><div><button id="mobileParams" class="quiet">調整參數</button><button id="methodsNav" class="quiet">方法與資料 ↗</button></div></header>
@@ -44,8 +46,8 @@
     <div class="metric-grid">
       <article class="metric"><span>期間內資產耗盡機率 <small id="horizon">50 年</small></span><strong id="ruinMetric">—</strong><p id="ruinNote">含未能全額支付當年支出的路徑</p><div class="metric-line coral"></div></article>
       <article class="metric"><span>生活費與資產雙重成功率</span><strong id="lifestyleMetric">—</strong><p id="lifestyleNote">未耗盡，且各年實質生活費 ≥ 初始 80%</p><div class="metric-line teal"></div></article>
-      <article class="metric"><span>期末實質資產中位數</span><strong id="terminalMetric">—</strong><p id="terminalNote">以退休起點的美元購買力計</p><div class="metric-line blue"></div></article>
-      <article class="metric"><span>初始年度生活費</span><strong id="spendingMetric">$40,000</strong><p id="spendingNote">每月約 $3,333 · 稅前</p><div class="metric-line gold"></div></article>
+      <article class="metric"><span>期末實質資產中位數</span><strong id="terminalMetric">—</strong><p id="terminalNote">以退休起點的台幣購買力計</p><div class="metric-line blue"></div></article>
+      <article class="metric"><span>初始年度生活費</span><strong id="spendingMetric">NT$1,200,000</strong><p id="spendingNote">每月約 NT$100,000 · 稅前</p><div class="metric-line gold"></div></article>
     </div>
     <article class="panel primary-chart"><div class="panel-heading"><div><span class="eyebrow">PORTFOLIO TRAJECTORIES</span><h2>50 年後的你，可能站在哪裡？</h2><p>實質資產百分位數 · 區間不是一條人的完整路徑</p></div><div class="chart-controls"><label><input id="tails" type="checkbox"> P1 / P99</label><label><input id="logScale" type="checkbox"> 對數刻度</label><select id="pathView" aria-label="資產圖顯示"><option value="percentiles">百分位數</option><option value="samples">最好／最差樣本</option></select></div></div><div id="assetChart" class="chart empty"><div><span class="empty-symbol">∿</span><h3>每條路徑，都是一種可能</h3><p>按下「執行模擬」，查看資產分布與尾部風險。</p></div></div><div class="chart-foot"><div class="legend"><span class="key pale">P5–P95</span><span class="key mid">P25–P75</span><span class="key median">P50 中位數</span></div><span>移動游標查看年度值 · 點圖釘選</span></div><div class="timeline"><label for="yearInspect">檢視年度</label><input type="range" id="yearInspect" min="0" max="50" value="25"><output id="yearOutput">第 25 年</output><label>顯示至 <input type="number" id="viewYears" min="1" max="50" value="50" aria-label="圖表顯示年數"> 年</label></div></article>
     <div class="two-col"><article class="panel"><div class="panel-heading"><div><span class="eyebrow">LIFESTYLE RISK</span><h2>生活費，守得住嗎？</h2><p>任一年實質生活費曾低於初始值的機率</p></div></div><div id="riskBars" class="risk-bars"><p class="placeholder">模擬後顯示 10% / 20% / 30% / 50% 下降風險</p></div><p class="callout">資產未歸零，仍可能需要大幅縮減生活費。這是動態策略最重要的取捨。</p></article><article class="panel"><div class="panel-heading"><div><span class="eyebrow">SPENDING PATH</span><h2>每年能花多少？</h2><p>實質年度支出 · P5 / P25 / P50 / P75 / P95</p></div></div><div id="spendingChart" class="chart compact empty"><p>執行模擬後查看生活費走勢</p></div></article></div>

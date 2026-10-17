@@ -1,11 +1,12 @@
 import { vcmmRate } from './data.js';
 export const STRATEGIES={fixed:'固定實質金額',percent:'固定資產比例',gk:'Guyton–Klinger 護欄',dynamic:'動態支出上下限'};
-export const DEFAULTS={initial:1000000,years:50,rate:0.04,strategy:'fixed',paths:10000,seed:741,
+export const DEFAULTS={currency:'USD',initial:1000000,years:50,rate:0.04,strategy:'fixed',paths:10000,seed:741,
   returnMode:'custom',sampling:'parametric',cagr:0.07,vol:0.18,fee:0.0006,drag:0,
   inflationModel:'constant',inflation:0.025,inflationVol:0.015,block:24,
   usWeight:0.63,transition:10,longRun:0.07,guard:0.2,adjust:0.1,ceiling:0.05,floor:0.025,
   spendingFloor:0.8,successTarget:0.95,successMetric:'lifestyle'};
 export function validate(c,data){
+  if(!['USD','TWD'].includes(c.currency))throw Error('未知幣種。');
   const bounds={initial:[1,1e12],years:[1,60],rate:[0,0.2],paths:[100,100000],seed:[0,4294967295],cagr:[-0.2,0.3],vol:[0,0.8],fee:[0,0.05],drag:[-0.05,0.05],inflation:[-0.05,0.2],inflationVol:[0,0.2],block:[1,120],usWeight:[0,1],transition:[1,30],longRun:[-0.2,0.3],guard:[0.01,0.8],adjust:[0.01,0.5],ceiling:[0,0.5],floor:[0,0.5],spendingFloor:[0,1],successTarget:[0.5,0.999]};
   for(const [k,[lo,hi]] of Object.entries(bounds))if(!Number.isFinite(c[k])||c[k]<lo||c[k]>hi)throw Error(`${k} 必須介於 ${lo} 與 ${hi}。`);
   for(const k of ['years','paths','seed','block','transition'])if(!Number.isInteger(c[k]))throw Error(`${k} 必須為整數。`);

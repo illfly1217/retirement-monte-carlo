@@ -10,6 +10,7 @@ export function validate(c,data){
   for(const [k,[lo,hi]] of Object.entries(bounds))if(!Number.isFinite(c[k])||c[k]<lo||c[k]>hi)throw Error(`${k} 必須介於 ${lo} 與 ${hi}。`);
   for(const k of ['years','paths','seed','block','transition'])if(!Number.isInteger(c[k]))throw Error(`${k} 必須為整數。`);
   if(!STRATEGIES[c.strategy])throw Error('未知提領策略。');
+  if(!['survival','lifestyle'].includes(c.successMetric))throw Error('未知成功定義。');
   if(!['historical','custom','vcmm'].includes(c.returnMode)||!['parametric','stationary','iid'].includes(c.sampling)||!['constant','lognormal','historical'].includes(c.inflationModel))throw Error('未知市場模型。');
   if(c.returnMode==='historical'&&c.sampling==='parametric')throw Error('歷史模式請使用 Block Bootstrap 或 IID。');
   if((c.returnMode==='historical'||c.sampling!=='parametric')&&(!data||data.returns.length<24))throw Error('尚未載入歷史月資料。請匯入 CSV，或選自訂／VCMM 參數模型。');

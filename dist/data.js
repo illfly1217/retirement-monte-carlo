@@ -49,6 +49,7 @@ export function parseCSV(text, {name='使用者上傳資料', kind='index-net'}=
     returns.push(idx>=0?values[i]/values[i-1]-1:values[i]);dates.push(months[i]);
     if(prices.length)inflation.push(cpi>=0?prices[i]/prices[i-1]-1:prices[i]);
   }
+  if([...returns,...inflation].some(v=>!Number.isFinite(v)||v<=-1))throw Error('水準換算的月變動率超出數值範圍；請檢查資料。');
   if(returns.length<24)throw Error('至少需要 24 個連續月報酬；研究用途建議 20 年以上。');
   if(returns.length<240)warnings.push('樣本少於 20 年，無法充分涵蓋市場循環。');
   return {name,kind,returns,inflation,dates,warnings,stats:statistics(returns)};

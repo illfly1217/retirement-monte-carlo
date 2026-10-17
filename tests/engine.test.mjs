@@ -30,3 +30,50 @@ test('CSV validates dates, decimals, gaps, duplicates, CPI and costs',()=>{const
 test('CSV handles BOM CRLF quoted numbers, rejects percent suffix and blank fields',()=>{let lines=['\uFEFFdate,return'];for(let i=0;i<24;i++)lines.push(`${2000+Math.floor(i/12)}-${String(i%12+1).padStart(2,'0')},"0.01"`);assert.equal(parseCSV(lines.join('\r\n')).returns.length,24);assert.throws(()=>parseCSV(lines.join('\n').replace('"0.01"','1%')),/有限/);assert.throws(()=>parseCSV(lines.join('\n').replace('"0.01"','')),/空白/);});
 test('No data never silently falls back; invalid parameters rejected',()=>{assert.throws(()=>prepareMarket(config({returnMode:'historical',sampling:'stationary'})),/尚未載入/);assert.throws(()=>validate(config({paths:100001})),/paths/);assert.throws(()=>validate(config({years:2.5})),/整數/);assert.throws(()=>validate(config({inflationModel:'historical'})),/通膨/);});
 test('Arithmetic and geometric return are distinct, lag correlation finite for constant series',()=>{const s=statistics([.1,-.1]);near(s.arithmeticAnnual,0);assert.ok(s.cagr<0);const z=statistics(Array(24).fill(0));near(z.autocorrelation,0);});
+
+test('Annual arithmetic expectation includes the lognormal variance term',()=>{
+  const c=config({paths:100000,years:1,cagr:.07,vol:.18});
+  const m=prepareMarket(c),mean=m.factors.reduce((a,b)=>a+b)/c.paths;
+  near(mean,Math.exp(Math.log1p(.07)+.18**2/2),.003);
+});
+test('IID pairs each equity month with CPI and shifts only equity log drift',()=>{
+  const returns=Array.from({length:36},(_,i)=>(i-15)/1000),data={returns,inflation:[...returns],kind:'index-net'};
+  const c=config({sampling:'iid',returnMode:'custom',inflationModel:'historical',years:2,cagr:.06});
+  const m=prepareMarket(c,data),random=rng(c.seed),mean=returns.map(Math.log1p).reduce((a,b)=>a+b)/36;
+  let idx=Math.floor(random()*36);
+  for(let y=0;y<2;y++){
+    let pi=1;for(let month=0;month<12;month++){if(y||month)idx=Math.floor(random()*36);pi*=1+returns[idx];}
+    near(m.inflation[y],pi);near(m.factors[y]/pi,Math.exp(Math.log1p(.06)-12*mean));
+  }
+});
+test('Stochastic inflation has the specified geometric drift and log volatility',()=>{
+  const c=config({paths:100000,years:1,inflationModel:'lognormal',inflation:.025,inflationVol:.015});
+  const logs=Array.from(prepareMarket(c).inflation,Math.log),mean=logs.reduce((a,b)=>a+b)/logs.length;
+  near(mean,Math.log1p(.025),.0002);near(Math.sqrt(logs.reduce((s,v)=>s+(v-mean)**2,0)/(logs.length-1)),.015,.0002);
+});
+test('Mixed return/CPI and index/inflation input align on the calculable month',()=>{
+  for(const header of ['date,return,cpi','date,index,inflation']){
+    const csv=[header,...Array.from({length:25},(_,i)=>`${2000+Math.floor(i/12)}-${String(i%12+1).padStart(2,'0')},${header.includes('return')?i/1000:100*1.01**i},${header.includes('cpi')?100*1.002**i:i/1000}`)].join('\n');
+    const d=parseCSV(csv);assert.equal(d.dates[0],'2000-02');assert.equal(d.returns.length,24);assert.equal(d.inflation.length,24);
+    near(d.returns[0],header.includes('return')?.001:.01);near(d.inflation[0],header.includes('cpi')?.002:.001);
+  }
+});
+test('Derived level returns reject overflow and underflow instead of accepting corrupt statistics',()=>{
+  for(const [first,second] of [[1e-300,1e300],[1e300,1e-300]]){
+    const lines=['date,index',...Array.from({length:25},(_,i)=>`${2000+Math.floor(i/12)}-${String(i%12+1).padStart(2,'0')},${i?second:first}`)];
+    assert.throws(()=>parseCSV(lines.join('\n')),/數值範圍/);
+  }
+});
+test('Zero withdrawal preserves spending semantics and exact final-year exhaustion counts',()=>{
+  const c=config({rate:0,years:2});const r=evaluate(c,flat(c));assert.equal(r.lifestyle,1);assert.deepEqual(r.drops,[0,0,0,0]);
+  const d=config({rate:.2,years:5});assert.equal(evaluate(d,flat(d)).depletion[5],d.paths);
+  assert.throws(()=>validate({...c,successMetric:'typo'}),/成功定義/);
+});
+test('GK search scans every grid point even when success increases locally',()=>{
+  const c=config({paths:100,years:40,strategy:'gk',vol:.4,cagr:.03,seed:19,successTarget:.5,successMetric:'survival',fee:.0006,inflation:.025});
+  const m=prepareMarket(c),r=searchRate(c,m);
+  assert.ok(r.trials.some((v,i,a)=>i&&v.success>a[i-1].success),'fixture must contain nonmonotonic guardrail outcomes');
+  assert.equal(r.trials.length,150);
+  const oracle=Array.from({length:150},(_,i)=>(i+1)/1000).filter(rate=>evaluate({...c,rate},m,{summaryOnly:true}).successCI[0]>=c.successTarget).at(-1);
+  assert.equal(r.rate,oracle);near(r.rate,.033);
+});

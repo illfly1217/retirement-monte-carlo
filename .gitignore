@@ -4,4 +4,8 @@ node_modules/
 *.log
 local-data/
 playwright-report/
+test-results/
+*.bundle
+.env
+.env.*
 .DS_Store

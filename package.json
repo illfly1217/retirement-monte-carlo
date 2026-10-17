@@ -1,6 +1,6 @@
 {
   "name": "retirement-monte-carlo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "Browser-local global equity retirement research lab",
@@ -8,7 +8,13 @@
     "dev": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
     "benchmark": "node scripts/benchmark.mjs",
-    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/worker.js && node --check dist/data.js && node --check dist/charts.js"
+    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/worker.js && node --check dist/data.js && node --check dist/charts.js",
+    "test:browser": "playwright test"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
+  }
 }

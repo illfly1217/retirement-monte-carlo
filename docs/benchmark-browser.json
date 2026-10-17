@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-17",
+  "productionSourceCommit": "c9c7bc5",
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "hardwareConcurrency": 20,
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "cpu": "12th Gen Intel(R) Core(TM) i7-12700KF",
+  "mode": "Actual Windows Codex in-app Chromium browser; no CPU throttling configured; worker time excludes UI rendering, downloads and automation overhead",
+  "config": {
+    "initial": 1000000,
+    "years": 50,
+    "rate": 0.04,
+    "strategy": "fixed",
+    "paths": 10000,
+    "seed": 741,
+    "returnMode": "custom",
+    "sampling": "parametric",
+    "cagr": 0.07,
+    "vol": 0.18,
+    "fee": 0.0006,
+    "drag": 0,
+    "inflationModel": "constant",
+    "inflation": 0.025,
+    "inflationVol": 0.015,
+    "block": 24,
+    "usWeight": 0.63,
+    "transition": 10,
+    "longRun": 0.07,
+    "guard": 0.2,
+    "adjust": 0.1,
+    "ceiling": 0.05,
+    "floor": 0.025,
+    "spendingFloor": 0.8,
+    "successTarget": 0.95,
+    "successMetric": "lifestyle"
+  },
+  "reports": [
+    {
+      "operation": "full simulation",
+      "paths": 10000,
+      "years": 50,
+      "seed": 741,
+      "at": "2026-10-17T10:09:22.004Z",
+      "totalWorkerMs": 530.3999999910593,
+      "marketMs": 382.79999999701977,
+      "marketCached": false,
+      "ruin": 0.4304,
+      "lifestyle": 0.5696,
+      "terminalMedian": 633659.1156721287
+    },
+    {
+      "operation": "full simulation",
+      "paths": 100000,
+      "years": 50,
+      "seed": 741,
+      "at": "2026-10-17T10:08:18.179Z",
+      "totalWorkerMs": 7260.79999999702,
+      "marketMs": 5814.20000000298,
+      "marketCached": false,
+      "ruin": 0.4295,
+      "lifestyle": 0.5705,
+      "terminalMedian": 648286.6415438225
+    },
+    {
+      "operation": "150-point grid search",
+      "paths": 10000,
+      "years": 50,
+      "seed": 741,
+      "totalWorkerMs": 1680,
+      "precisionMs": 10,
+      "source": "Displayed browser status, rounded to 0.01 seconds",
+      "includesMarketGeneration": true,
+      "rate": 0.015
+    }
+  ],
+  "earlierMeasurements": {
+    "full100kMs": 5268.70000000298,
+    "note": "Before final numeric overflow guard; not the final build timing. Single-run timings vary with host load and JIT."
+  },
+  "mobile": "390x844 responsive viewport and Pixel 7 emulation; no physical-phone performance or peak-memory measurement"
+}

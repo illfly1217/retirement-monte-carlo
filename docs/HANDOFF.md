@@ -1,3 +1,7 @@
+# 最新狀態：v1.2 使用者回饋修正
+
+已依序建立 issues #1–#4，完成排版、策略細節、TWD／USD，以及移除匯入／內建官方 CPI。37 項計算測試、15 項瀏覽器測試通過，手機 100k 依原設定略過。完整 MSCI 月序列未取得可發布資料，#4 保留追蹤。最新使用及資料規格以 README.md、REVISION_1_2.md、SOURCES.md 及 QA.md 為準；下方為較早紀錄。
+
 # 接續工作（2026-10-17）
 
 最新使用者決策已取代先前 Sites 私人部署優先的要求：主要開發採 Codex＋公開 GitHub，網站採 GitHub Pages；原先先本機試用的門檻已由本次「用 GitHub.io 開起來看」要求更新，網站已公開於 [https://njames741.github.io/retirement-monte-carlo/](https://njames741.github.io/retirement-monte-carlo/)。既有 Sites 不改受眾、不另建、不繼續部署。

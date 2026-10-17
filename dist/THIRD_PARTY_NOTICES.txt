@@ -1,14 +1,22 @@
-第三方來源與權利說明
+第三方來源與資料說明（2026-10-17，v1.2）
 
-本工具為獨立研究工具，不是 MSCI 或 Vanguard 官方產品。沒有內建第三方完整歷史數列。CSV 僅由訪客瀏覽器讀取及保存。
+本工具為獨立研究工具，不是 MSCI、Vanguard、BLS 或主計總處官方產品。
 
-VCMM 公開數值來源（基準 2026-06-30）：
+台灣 CPI：行政院主計總處消費者物價總指數，1981-01–2026-09，基期 2021=100。
+來源：https://data.gov.tw/dataset/6019
+政府資料開放授權第 1 版：https://data.gov.tw/license
+格式轉換及月變動計算由本工具完成，不暗示官方認可。
+
+美國 CPI：U.S. Bureau of Labor Statistics，CPI-U 全項目、城市平均、未季調 CUUR0000SA0，經 Federal Reserve Bank of St. Louis FRED CPIAUCNS 取得，1981-01–2026-09。
+來源：https://fred.stlouisfed.org/series/CPIAUCNS
+使用說明：https://www.bls.gov/opub/copyright-information.htm
+BLS 資料為 public domain，保留來源，不使用官方 logo。2025-10 缺值不插補，不將跨月變動當作單月通膨。
+
+VCMM 參考區間：2026-06-30 模型、2026-07-22 發布。
 https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-return-forecasts.html
 https://www.vanguardmexico.com/en/home/insights/economic-market-outlook/vanguard-capital-markets-model-forecasts-2026
+預測具假設性，非實際投資結果或保證，可能隨日期改變，未扣通膨、稅或基金成本。本工具只用少量公開區間中點作名目 USD 幾何漂移參考，沒有重建 VCMM 的波動、相關性及完整分布。十年後銜接、全球權重與長期假設為工具自行設定。
 
-Vanguard 預測具假設性，非實際結果或未來保證，可能隨日期改變。其預測使用資產分布、波動及相關性；本工具只使用公開區間中點作名目 USD 幾何漂移參考，沒有重建專有模型。官方預測未扣通膨、稅或基金成本；本工具另處理基金成本及購買力，尚未處理個人稅。十年後銜接、全球權重及長期假設為本工具自訂。
+MSCI 完整月序列尚未內建，股票歷史抽樣暫不可用。資料條款：https://www.msci.com/legal/index-terms
 
-MSCI 資料條款：https://www.msci.com/legal/index-terms
-沒有取得完整月序列的再散布授權；可讀取不等於可重分發。
-
-所有文獻及方法來源見網頁「資料與方法」。網站不附第三方字型、logo、圖表程式庫或市場月觀察值。
+所有文獻及方法來源見「資料與方法」。沒有訪客資料上傳或匯入功能，不附第三方字型、logo、圖表程式庫或完整論文。

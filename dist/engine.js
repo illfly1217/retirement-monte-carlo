@@ -12,10 +12,14 @@ export function validate(c,data){
   for(const k of ['years','paths','seed','block','transition'])if(!Number.isInteger(c[k]))throw Error(`${k} 必須為整數。`);
   if(!STRATEGIES[c.strategy])throw Error('未知提領策略。');
   if(!['survival','lifestyle'].includes(c.successMetric))throw Error('未知成功定義。');
-  if(!['historical','custom','vcmm'].includes(c.returnMode)||!['parametric','stationary','iid'].includes(c.sampling)||!['constant','lognormal','historical'].includes(c.inflationModel))throw Error('未知市場模型。');
+  if(!['historical','custom','vcmm'].includes(c.returnMode)||!['parametric','stationary','iid'].includes(c.sampling)||!['constant','lognormal','historical','cpi'].includes(c.inflationModel))throw Error('未知市場模型。');
   if(c.returnMode==='historical'&&c.sampling==='parametric')throw Error('歷史模式請使用 Block Bootstrap 或 IID。');
-  if((c.returnMode==='historical'||c.sampling!=='parametric')&&(!data||data.returns.length<24))throw Error('尚未載入歷史月資料。請匯入 CSV，或選自訂／VCMM 參數模型。');
-  if(c.inflationModel==='historical'&&(!data?.inflation?.length||c.sampling==='parametric'))throw Error('歷史通膨需含 CPI 的 CSV，搭配歷史抽樣。');
+  if((c.returnMode==='historical'||c.sampling!=='parametric')&&(!data||data.returns.length<24))throw Error('尚未載入專案歷史股票月資料。請選自訂／VCMM 參數模型。');
+  if(c.inflationModel==='historical'&&(!data?.inflation?.length||c.sampling==='parametric'))throw Error('同步歷史通膨需與股票月份對齊，搭配歷史抽樣。');
+  if(c.inflationModel==='cpi'){
+    const series=data?.cpi;
+    if(!series||series.currency!==c.currency||series.inflation.length<24||series.dates.length!==series.inflation.length||series.inflation.some(v=>!Number.isFinite(v)||v<=-1))throw Error('內建 CPI 資料無效或幣種不符。');
+  }
   if(c.sampling!=='parametric'&&data){
     if(data.returns.some(v=>!Number.isFinite(v)||v<=-1))throw Error('歷史月報酬無效。');
     if(c.inflationModel==='historical'&&(data.inflation.length!==data.returns.length||data.inflation.some(v=>!Number.isFinite(v)||v<=-1)))throw Error('CPI／通膨必須與股票月資料完整對齊。');
@@ -34,12 +38,18 @@ export function prepareMarket(c,data,progress=()=>{}){
   validate(c,data);const t=performance.now(),random=rng(c.seed),n=c.paths,T=c.years;
   const factors=new Float64Array(n*T),inflation=new Float64Array(n*T);
   const logs=data?.returns.map(Math.log1p),plogs=data?.inflation?.map(Math.log1p);
+  // CPI-only resampling uses a separate stream: no claimed stock/CPI correlation.
+  const cpiLogs=c.inflationModel==='cpi'?data.cpi.inflation.map(Math.log1p):null;
+  const serial=month=>Number(month.slice(0,4))*12+Number(month.slice(5))-1;
+  const cpiNext=cpiLogs?data.cpi.dates.map((date,i)=>i+1<cpiLogs.length&&serial(data.cpi.dates[i+1])-serial(date)===1?i+1:null):null;
+  const cpiRandom=rng((c.seed^0xA5A5A5A5)>>>0);
   const histMean=logs?.reduce((a,b)=>a+b,0)/logs?.length;
   const costs=(data?.kind==='fund-net'&&c.sampling!=='parametric')?1:(1-c.fee)*Math.exp(-c.drag);
   const sig=c.vol/Math.sqrt(12),inflMu=Math.log1p(c.inflation)/12,inflSig=c.inflationVol/Math.sqrt(12);
   const targets=Array.from({length:T},(_,y)=>targetLog(c,y)/12);
   for(let p=0;p<n;p++){
-    let idx=logs?Math.floor(random()*logs.length):0;
+    let idx=logs?.length?Math.floor(random()*logs.length):0;
+    let cpiIdx=cpiLogs?Math.floor(cpiRandom()*cpiLogs.length):0;
     for(let y=0;y<T;y++){
       let total=0,pi=0;
       for(let m=0;m<12;m++){
@@ -48,7 +58,10 @@ export function prepareMarket(c,data,progress=()=>{}){
           if(m!==0||y!==0){idx=(c.sampling==='iid'||random()<1/c.block)?Math.floor(random()*logs.length):(idx+1)%logs.length;}
           total+=logs[idx]+(c.returnMode==='historical'?0:targets[y]-histMean);
         }
-        pi+=c.inflationModel==='historical'?plogs[idx]:inflMu+(c.inflationModel==='lognormal'?inflSig*normal(random):0);
+        if(cpiLogs){
+          if(m||y)cpiIdx=cpiNext[cpiIdx]===null||cpiRandom()<1/c.block?Math.floor(cpiRandom()*cpiLogs.length):cpiNext[cpiIdx];
+          pi+=cpiLogs[cpiIdx];
+        }else pi+=c.inflationModel==='historical'?plogs[idx]:inflMu+(c.inflationModel==='lognormal'?inflSig*normal(random):0);
       }
       factors[p*T+y]=Math.exp(total)*costs;inflation[p*T+y]=Math.exp(pi);
       if(!Number.isFinite(factors[p*T+y])||!Number.isFinite(inflation[p*T+y])||factors[p*T+y]<=0||inflation[p*T+y]<=0)throw Error('報酬或通膨造成數值溢位；請檢查輸入單位與資料。');

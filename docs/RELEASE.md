@@ -1,3 +1,9 @@
+# v1.3.1（2026-10-17）
+
+使用者已授權修正後直接推送。本版本修正 CPI 月份抽樣權重及獨立通膨亂數串流，精簡主畫面並以今天購買力說明金額；[修正內容及驗證](REVISION_1_3_1.md)。本機 44 項計算、31 項瀏覽器案例及 12 項獨立核對通過，手機 100k 按既有設定略過。
+
+本版本沿用 main 推送自動驗證及發布；執行結果以 [Pages 工作流程](https://github.com/njames741/retirement-monte-carlo/actions/workflows/pages.yml) 的對應提交終態為準。公開入口：[退休研究室](https://njames741.github.io/retirement-monte-carlo/)。原始股票檔及月資料不包含在推送或 dist/。
+
 # 後續改為自動 CI／CD（2026-10-17）
 
 使用者已決定採「推送 main → 自動測試 → 通過後自動發布」。這取代下方歷史紀錄的手動發布限制。

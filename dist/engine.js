@@ -46,6 +46,17 @@ export function prepareMarket(config,data,progress=()=>{}){
   const serial=month=>Number(month.slice(0,4))*12+Number(month.slice(5))-1;
   const cpiNext=cpiLogs?data.cpi.dates.map((date,i)=>i+1<cpiLogs.length&&serial(data.cpi.dates[i+1])-serial(date)===1?i+1:null):null;
   const cpiRandom=rng((c.seed^0xA5A5A5A5)>>>0);
+  const inflationRandom=rng((c.seed^0x9E3779B9)>>>0);
+  const cpiStarts=cpiLogs?data.cpi.dates.flatMap((_,i)=>i===0||cpiNext[i-1]===null?[i]:[]):null;
+  // Forced boundary restarts remove incoming continuation at segment starts.
+  // Give those starts L times the restart weight of internal months: with
+  // continuation 1-1/L, every month then retains marginal probability 1/n.
+  const restartCpi=()=>{
+    const u=cpiRandom(),n=cpiLogs.length;
+    if(cpiStarts.length===n)return Math.floor(u*n);
+    const mass=u*(n+cpiStarts.length*(c.block-1));
+    return mass<n?Math.floor(mass):cpiStarts[Math.floor((mass-n)/(c.block-1))];
+  };
   const histMean=logs?.reduce((a,b)=>a+b,0)/logs?.length;
   const costs=(data?.kind==='fund-net'&&c.sampling!=='parametric')?1:(1-c.fee)*Math.exp(-c.drag);
   const sig=c.vol/Math.sqrt(12),inflMu=Math.log1p(c.inflation)/12,inflSig=c.inflationVol/Math.sqrt(12);
@@ -62,9 +73,9 @@ export function prepareMarket(config,data,progress=()=>{}){
           total+=logs[idx]+(c.returnMode==='historical'?0:targets[y]-histMean);
         }
         if(cpiLogs){
-          if(m||y)cpiIdx=cpiNext[cpiIdx]===null||cpiRandom()<1/c.block?Math.floor(cpiRandom()*cpiLogs.length):cpiNext[cpiIdx];
+          if(m||y)cpiIdx=cpiNext[cpiIdx]===null||cpiRandom()<1/c.block?restartCpi():cpiNext[cpiIdx];
           pi+=cpiLogs[cpiIdx];
-        }else pi+=c.inflationModel==='historical'?plogs[idx]:inflMu+(c.inflationModel==='lognormal'?inflSig*normal(random):0);
+        }else pi+=c.inflationModel==='historical'?plogs[idx]:inflMu+(c.inflationModel==='lognormal'?inflSig*normal(inflationRandom):0);
       }
       factors[p*T+y]=Math.exp(total)*costs;inflation[p*T+y]=Math.exp(pi);
       if(!Number.isFinite(factors[p*T+y])||!Number.isFinite(inflation[p*T+y])||factors[p*T+y]<=0||inflation[p*T+y]<=0)throw Error('報酬或通膨造成數值溢位；請檢查輸入單位與資料。');

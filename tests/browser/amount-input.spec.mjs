@@ -80,6 +80,7 @@ test('raw and grouped amounts produce the same numeric simulation and exports', 
   await page.locator('#inflationModel').selectOption('constant');
   await page.locator('#years').fill('1');
   await page.locator('#paths').selectOption('1000');
+  await page.locator('#costSettings > summary').click();
   for (const id of ['cagr', 'vol', 'fee', 'inflation']) await page.locator('#' + id).fill('0');
   const snapshots = [];
   for (const text of ['30000000', '30,000,000']) {

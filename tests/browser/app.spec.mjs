@@ -20,6 +20,8 @@ test('default form submits; Pages subpath loads modules and Worker; charts respo
   await page.reload();
   await parameters(page);
   expect(await page.locator('#parameters').evaluate(e=>e.checkValidity())).toBe(true);
+  await expect(page.locator('#dataNotice')).toContainText('今天的購買力');
+  await expect(page.locator('#fee')).toBeHidden();
   await run(page);
   await expect(page.locator('#ruinMetric')).toHaveText('43.0%');
   await expect(page.locator('#lifestyleMetric')).toHaveText('57.0%');

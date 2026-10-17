@@ -43,8 +43,8 @@ test('inflation presets and CPI statistics are read-only and custom inflation is
   await page.locator('#inflationModel').selectOption('cpi');
   for(const id of ['inflation','inflationVol'])await expect(page.locator('#'+id)).toHaveAttribute('readonly','');
   await expect(page.locator('#inflationPresetNote')).toContainText('歷史樣本統計');
-  await expect(page.locator('#inflationPresetNote')).toContainText('不是使用固定通膨率');
-  await expect(page.locator('#inflationModelState')).toContainText('股票仍使用參數模型');
+  await expect(page.locator('#inflationPresetNote')).toContainText('並非固定通膨率');
+  await expect(page.locator('#inflationModelState')).toContainText('通膨與股票分開模擬');
   await expect(page.locator('#blockField')).toBeVisible();
   await page.screenshot({path:info.outputPath('cpi-statistics.png'),fullPage:true});
   await page.reload();await parameters(page);
@@ -57,9 +57,9 @@ test('inflation presets and CPI statistics are read-only and custom inflation is
 
 test('sampling status explains separate stock and CPI methods without unusable selectors',async({page})=>{
   await expect(page.locator('select#sampling')).toHaveCount(0);
-  await expect(page.locator('#equityModelState')).toContainText('完整蒙地卡羅模擬');
+  await expect(page.locator('#samplingMethodsLink')).toBeVisible();
   await page.locator('#inflationModel').selectOption('cpi');
-  await expect(page.locator('#equityModelState')).toContainText('股票：參數模型');
+  await expect(page.locator('#samplingMethodsLink')).toContainText('模型與資料說明');
   await page.locator('#samplingMethodsLink').click();
   await expect(page.locator('#data')).toBeVisible();await expect(page.locator('#samplingMethods')).toHaveAttribute('open','');
   await expect(page.locator('#samplingMethods')).toContainText('不是準確度等級');

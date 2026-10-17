@@ -1,7 +1,7 @@
 import {VCMM, vcmmRate, statistics} from './data.js';
 import {EQUITY_PARAMETERS} from './equity-parameters.js';
 
-export const SCENARIO_VERSION = '2026-10-17.1';
+export const SCENARIO_VERSION = '2026-10-17.2';
 export const VCMM_PRESET = Object.freeze({cagr: vcmmRate(.63), vol: .18, usWeight: .63, longRun: .07, transition: 10});
 export const INFLATION_PRESETS = Object.freeze({
   TWD: Object.freeze({inflation: .02, inflationVol: .01}),
@@ -51,6 +51,7 @@ export function scenarioMetadata(config, dataset) {
     const source = dataset.cpi;
     Object.assign(inflation, {
       sampling: 'independent stationary blocks', blockMonths: c.block,
+      boundaryTreatment: 'Restart weights balance segment starts and internal months to preserve uniform marginal sampling; never continue across gaps or sample ends.',
       source: source.source, version: source.version, from: source.dates[0], to: source.dates.at(-1),
       sampleStatistics: {cagr: c.inflation, logVol: c.inflationVol, months: source.inflation.length},
       note: 'Sample statistics describe the dataset; simulation resamples monthly inflation, not a fixed rate.',

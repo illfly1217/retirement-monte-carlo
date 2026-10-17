@@ -1,18 +1,20 @@
 import { vcmmRate } from './data.js';
+import {resolveScenario} from './scenarios.js';
 export const STRATEGIES={fixed:'固定實質金額',percent:'固定資產比例',gk:'Guyton–Klinger 護欄',dynamic:'動態支出上下限'};
 export const DEFAULTS={currency:'USD',initial:1000000,years:50,rate:0.04,strategy:'fixed',paths:10000,seed:741,
   returnMode:'custom',sampling:'parametric',cagr:0.07,vol:0.18,fee:0.0006,drag:0,
   inflationModel:'constant',inflation:0.025,inflationVol:0.015,block:24,
   usWeight:0.63,transition:10,longRun:0.07,guard:0.2,adjust:0.1,ceiling:0.05,floor:0.025,
   spendingFloor:0.8,successTarget:0.95,successMetric:'lifestyle'};
-export function validate(c,data){
+export function validate(config,data){
+  const c=resolveScenario(config,data);
   if(!['USD','TWD'].includes(c.currency))throw Error('未知幣種。');
   const bounds={initial:[1,1e12],years:[1,60],rate:[0,0.2],paths:[100,100000],seed:[0,4294967295],cagr:[-0.2,0.3],vol:[0,0.8],fee:[0,0.05],drag:[-0.05,0.05],inflation:[-0.05,0.2],inflationVol:[0,0.2],block:[1,120],usWeight:[0,1],transition:[1,30],longRun:[-0.2,0.3],guard:[0.01,0.8],adjust:[0.01,0.5],ceiling:[0,0.5],floor:[0,0.5],spendingFloor:[0,1],successTarget:[0.5,0.999]};
   for(const [k,[lo,hi]] of Object.entries(bounds))if(!Number.isFinite(c[k])||c[k]<lo||c[k]>hi)throw Error(`${k} 必須介於 ${lo} 與 ${hi}。`);
   for(const k of ['years','paths','seed','block','transition'])if(!Number.isInteger(c[k]))throw Error(`${k} 必須為整數。`);
   if(!STRATEGIES[c.strategy])throw Error('未知提領策略。');
   if(!['survival','lifestyle'].includes(c.successMetric))throw Error('未知成功定義。');
-  if(!['historical','custom','vcmm'].includes(c.returnMode)||!['parametric','stationary','iid'].includes(c.sampling)||!['constant','lognormal','historical','cpi'].includes(c.inflationModel))throw Error('未知市場模型。');
+  if(!['historical','custom','vcmm','msci'].includes(c.returnMode)||!['parametric','stationary','iid'].includes(c.sampling)||!['constant','preset','lognormal','historical','cpi'].includes(c.inflationModel))throw Error('未知市場模型。');
   if(c.returnMode==='historical'&&c.sampling==='parametric')throw Error('歷史模式請使用 Block Bootstrap 或 IID。');
   if((c.returnMode==='historical'||c.sampling!=='parametric')&&(!data||data.returns.length<24))throw Error('尚未載入專案歷史股票月資料。請選自訂／VCMM 參數模型。');
   if(c.inflationModel==='historical'&&(!data?.inflation?.length||c.sampling==='parametric'))throw Error('同步歷史通膨需與股票月份對齊，搭配歷史抽樣。');
@@ -34,7 +36,8 @@ export function targetLog(c,year){
   if(year<10)return near;
   return near+(far-near)*Math.min(1,(year-9)/c.transition);
 }
-export function prepareMarket(c,data,progress=()=>{}){
+export function prepareMarket(config,data,progress=()=>{}){
+  const c=resolveScenario(config,data);
   validate(c,data);const t=performance.now(),random=rng(c.seed),n=c.paths,T=c.years;
   const factors=new Float64Array(n*T),inflation=new Float64Array(n*T);
   const logs=data?.returns.map(Math.log1p),plogs=data?.inflation?.map(Math.log1p);

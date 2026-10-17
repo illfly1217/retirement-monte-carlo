@@ -37,3 +37,9 @@ input:not([type=checkbox]):not([type=range]):not([type=file]),select{font-size:1
 .drawer-close{display:none}@media(max-width:700px){.drawer-close{display:block;margin:0 0 14px auto;color:var(--ink);font-size:16px;background:#f0f6f4;border-radius:6px}}
 
 .field-error{color:#a14735;margin-top:-8px}#initial[aria-invalid=true]{border-color:#a14735}
+
+input[readonly]{background:#edf1f1!important;color:#4e6268!important;border-color:#d7dfe0!important;cursor:default}
+.model-state{padding:11px 12px;margin:0 0 16px;background:#f0f5f4;border:1px solid #dce6e3;border-radius:6px;font-size:14px;line-height:1.7;color:#415d61}
+.model-state b{font-weight:600}.model-state p{margin:4px 0;font-size:14px;color:#526c71}.model-state a{display:inline-block;margin-top:4px}
+label>.not-applicable{display:block;float:none;margin-top:6px;padding:11px 8px;min-height:46px;color:#52656a;background:#edf1f1;border-radius:6px;font-size:14px;font-weight:400}
+#samplingMethods table{white-space:normal}#samplingMethods td:last-child{white-space:normal;min-width:240px}

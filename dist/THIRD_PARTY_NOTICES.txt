@@ -1,4 +1,4 @@
-第三方來源與資料說明（2026-10-17，v1.2）
+第三方來源與資料說明（2026-10-17，v1.3）
 
 本工具為獨立研究工具，不是 MSCI、Vanguard、BLS 或主計總處官方產品。
 
@@ -17,6 +17,11 @@ https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-return
 https://www.vanguardmexico.com/en/home/insights/economic-market-outlook/vanguard-capital-markets-model-forecasts-2026
 預測具假設性，非實際投資結果或保證，可能隨日期改變，未扣通膨、稅或基金成本。本工具只用少量公開區間中點作名目 USD 幾何漂移參考，沒有重建 VCMM 的波動、相關性及完整分布。十年後銜接、全球權重與長期假設為工具自行設定。
 
-MSCI 完整月序列尚未內建，股票歷史抽樣暫不可用。資料條款：https://www.msci.com/legal/index-terms
+MSCI ACWI IMI（664204）USD Net 的月末水準已由官方查詢頁下載並在本地核對。水準期間為 1997-01–2026-09，356 個月報酬期間為 1997-02–2026-09；2007-06-05 指數推出前為回溯測試。
+來源：https://app2.msci.com/products/index-data-search/
+本工具只內建依月對數報酬計算的幾何報酬與波動等彙總參數及其來源紀錄，原始 XLS、CSV 和月序列不隨網站提供。歷史股票月份重抽仍列後續功能。
+原始序列再散布與彙總參數使用條件分別記錄，未宣稱已取得 MSCI 個別授權；此說明不是對少量統計參數的確定法律判斷。
+資料條款：https://www.msci.com/legal/index-terms
+https://www.msci.com/legal/notice-and-disclaimer
 
 所有文獻及方法來源見「資料與方法」。沒有訪客資料上傳或匯入功能，不附第三方字型、logo、圖表程式庫或完整論文。

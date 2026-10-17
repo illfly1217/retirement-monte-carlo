@@ -1,3 +1,12 @@
+# v1.3 已實作，尚未更新公開網站（2026-10-17）
+
+- Issues #4、#7、#8 的本地校準、內建數值唯讀、自訂草稿、模型狀態與匯出來源已完成，詳見 [REVISION_1_3](REVISION_1_3.md)。
+- 41 項 Node／Worker／資料測試、31 項桌面／手機瀏覽器案例通過，手機 100k 依既有設定略過；分批驗證紀錄及實際瀏覽器檢查見 [QA](QA.md)。
+- 發布資料包包含原創程式、CPI、VCMM 參考值及 MSCI 彙總參數／來源 metadata；不包含 MSCI 原始月序列、工作簿或清理後 CSV。使用條件查核見 [第三方紀錄](THIRD_PARTY_NOTICES.md)，沒有宣稱 MSCI 額外授權或背書。
+- GitHub main 更新不會自動更新 Pages。公開網站仍為下列 issue #6 版本；後續依使用者發布指示執行既有手動流程。
+
+下方為各次公開發布的歷史紀錄，資料包及功能狀態以各次版本為準。
+
 # 初始資產千分位已發布（2026-10-17）
 
 - [Issue #6](https://github.com/njames741/retirement-monte-carlo/issues/6) 已實作並更新至[公開網站](https://njames741.github.io/retirement-monte-carlo/)。資產輸入即時顯示千分位，支援含逗號貼上及正常編輯；計算、保存及匯出保留數值金額。

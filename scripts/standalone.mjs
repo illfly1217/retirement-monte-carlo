@@ -5,7 +5,7 @@ import path from 'node:path';
 const out=path.resolve(process.argv[2]||'local-data/standalone');mkdirSync(out,{recursive:true});
 const read=f=>readFileSync('dist/'+f,'utf8');
 const moduleBody=source=>source.replace(/^import[^\n]*\n/gm,'').replace(/^export /gm,'');
-const core=moduleBody(read('data.js'))+'\n'+moduleBody(read('engine.js'));
+const core=moduleBody(read('data.js'))+'\n'+moduleBody(read('equity-parameters.js'))+'\n'+moduleBody(read('scenarios.js'))+'\n'+moduleBody(read('engine.js'));
 const worker=core+'\n'+moduleBody(read('worker.js'));
 const replacement=`new Worker(URL.createObjectURL(new Blob([${JSON.stringify(worker)}],{type:'text/javascript'})),{type:'module'})`;
 const app=moduleBody(read('app.js')).replace("new Worker(new URL('./worker.js',import.meta.url),{type:'module'})",()=>replacement);

@@ -76,6 +76,8 @@ test('pasted assets are validated without corrupting the last saved amount', asy
 });
 
 test('raw and grouped amounts produce the same numeric simulation and exports', async ({page}) => {
+  await page.locator('#returnMode').selectOption('custom');
+  await page.locator('#inflationModel').selectOption('constant');
   await page.locator('#years').fill('1');
   await page.locator('#paths').selectOption('1000');
   for (const id of ['cagr', 'vol', 'fee', 'inflation']) await page.locator('#' + id).fill('0');

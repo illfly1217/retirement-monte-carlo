@@ -13,7 +13,7 @@ async function run(page){
   await expect(page.locator('#error')).toBeHidden();
 }
 // Keep the original USD numerical regression; fresh TWD defaults are covered in revisions.spec.
-test.beforeEach(async({page})=>{await page.goto('./');await expect(page.locator('#statusText')).toBeVisible();await parameters(page);await page.locator('#currency').selectOption('USD');if(await page.locator('#mobileParams').isVisible())await page.locator('#closeParams').click();});
+test.beforeEach(async({page})=>{await page.goto('./');await expect(page.locator('#statusText')).toBeVisible();await parameters(page);await page.locator('#currency').selectOption('USD');await page.locator('#returnMode').selectOption('custom');if(await page.locator('#mobileParams').isVisible())await page.locator('#closeParams').click();});
 
 test('default form submits; Pages subpath loads modules and Worker; charts respond',async({page},info)=>{
   const requests=[];page.on('request',r=>requests.push(r.url()));
@@ -49,7 +49,7 @@ test('four strategies share paths; assumption comparison and 150-point search',a
   await expect(page.locator('#compareTable tr')).toHaveCount(4);
   await expect(page.locator('#compareTable tr').nth(1)).toContainText('0.0%');
   await page.locator('#assumptionRun').click();await expect(page.locator('#statusText')).toContainText('計算完成');
-  await expect(page.locator('#assumptionTable tr')).toHaveCount(2);
+  await expect(page.locator('#assumptionTable tr')).toHaveCount(3);
   await page.getByRole('button',{name:'提領率探索',exact:true}).click();
   await page.locator('#swrRun').click();await expect(page.locator('#statusText')).toContainText('計算完成');
   await expect(page.locator('#swrValue')).toHaveText('1.5%');
@@ -62,11 +62,11 @@ test('built-in CPI and VCMM work with no file import and persist across reloads'
   await expect(page.locator('#datasetSummary')).toContainText('BLS');
   await expect(page.locator('#dataVersion')).toContainText('2026-10-17');
   await parameters(page);await page.locator('#inflationModel').selectOption('cpi');
-  await expect(page.locator('#inflation')).toBeDisabled();await run(page);
+  await expect(page.locator('#inflation')).toHaveAttribute('readonly','');await run(page);
   await parameters(page);await page.locator('#returnMode').selectOption('vcmm');await run(page);
   await page.getByRole('button',{name:'策略與情境',exact:true}).click();
   await page.locator('#assumptionRun').click();await expect(page.locator('#statusText')).toContainText('計算完成');
-  await expect(page.locator('#assumptionTable tr')).toHaveCount(2);
+  await expect(page.locator('#assumptionTable tr')).toHaveCount(3);
   await parameters(page);await page.locator('#currency').selectOption('TWD');
   await page.locator('#inflationModel').selectOption('cpi');await run(page);
   await page.reload();await parameters(page);

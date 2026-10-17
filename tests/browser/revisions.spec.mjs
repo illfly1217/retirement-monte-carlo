@@ -34,10 +34,10 @@ test('strategy settings only expose controls for the selected rule',async({page}
 test('currency presets, persistence, results and downloads use the selected currency',async({page})=>{
   await expect(page.locator('#currency')).toHaveValue('TWD');
   await expect(page.locator('#initial')).toHaveValue('30,000,000');
-  await expect(page.locator('#inflation')).toHaveValue('2');
+  await expect(page.locator('#inflation')).toHaveValue('2.00');
   await page.locator('#currency').selectOption('USD');
   await expect(page.locator('#initial')).toHaveValue('1,000,000');
-  await expect(page.locator('#inflation')).toHaveValue('2.5');
+  await expect(page.locator('#inflation')).toHaveValue('2.50');
   await page.locator('#initial').fill('1500000');
   await page.reload();await parameters(page);
   await expect(page.locator('#currency')).toHaveValue('USD');

@@ -1,9 +1,12 @@
 import {prepareMarket,evaluate,searchRate,STRATEGIES,validate} from './engine.js';
+import {resolveScenario,scenarioMetadata} from './scenarios.js';
+import {EQUITY_PARAMETERS} from './equity-parameters.js';
 let cache=null;
-self.onmessage=({data:{id,action,config,dataset}})=>{
+self.onmessage=({data:{id,action,config,dataset,customReturns}})=>{
   const start=performance.now();
   const progress=(value,label)=>self.postMessage({id,type:'progress',value,label});
   try{
+    config=resolveScenario(config,dataset);
     validate(config,dataset);
     const key=JSON.stringify(Object.fromEntries(['paths','years','seed','returnMode','sampling','cagr','vol','fee','drag','inflationModel','inflation','inflationVol','block','usWeight','transition','longRun'].map(k=>[k,config[k]])))+JSON.stringify(dataset);
     const marketCached=!!cache&&cache.key===key;
@@ -12,11 +15,11 @@ self.onmessage=({data:{id,action,config,dataset}})=>{
     if(action==='assumptions'){
       const hasHistory=dataset?.returns?.length>=24;
       const sampling=hasHistory?(config.sampling==='parametric'?'stationary':config.sampling):'parametric';
-      const modes=hasHistory?['historical','custom','vcmm']:['custom','vcmm'];
+      const modes=[...(hasHistory?['historical']:[]),...(EQUITY_PARAMETERS.status==='ready'?['msci']:[]),'custom','vcmm'];
       result=modes.map(returnMode=>{
-        const c={...config,returnMode,sampling};
+        const c=resolveScenario({...config,...(returnMode==='custom'?customReturns:null),returnMode,sampling},dataset);
         const market=prepareMarket(c,dataset,progress);
-        return{label:returnMode==='historical'?'專案歷史估計':returnMode==='custom'?`自訂 CAGR ${(c.cagr*100).toFixed(1)}%`:'VCMM 10 年 + 長期銜接',returnMode,...evaluate(c,market,{summaryOnly:true})};
+        return{label:returnMode==='historical'?'專案歷史抽樣':returnMode==='msci'?'MSCI 歷史估計（參數）':returnMode==='custom'?`自訂 CAGR ${(c.cagr*100).toFixed(1)}%`:'VCMM 10 年 + 長期銜接',returnMode,scenario:scenarioMetadata(c,dataset),...evaluate(c,market,{summaryOnly:true})};
       });
     }
     else if(action==='swr') result=searchRate(config,cache.market,progress);

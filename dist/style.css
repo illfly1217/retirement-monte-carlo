@@ -35,3 +35,5 @@ input:not([type=checkbox]):not([type=range]):not([type=file]),select{font-size:1
 .field-title{font-weight:500}#dataVersion{margin-top:16px}.data-summary{overflow-wrap:anywhere}
 
 .drawer-close{display:none}@media(max-width:700px){.drawer-close{display:block;margin:0 0 14px auto;color:var(--ink);font-size:16px;background:#f0f6f4;border-radius:6px}}
+
+.field-error{color:#a14735;margin-top:-8px}#initial[aria-invalid=true]{border-color:#a14735}

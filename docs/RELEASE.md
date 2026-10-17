@@ -1,9 +1,11 @@
-# v1.3 已實作，尚未更新公開網站（2026-10-17）
+# v1.3 已發布到 GitHub Pages（2026-10-17）
 
 - Issues #4、#7、#8 的本地校準、內建數值唯讀、自訂草稿、模型狀態與匯出來源已完成，詳見 [REVISION_1_3](REVISION_1_3.md)。
 - 41 項 Node／Worker／資料測試、31 項桌面／手機瀏覽器案例通過，手機 100k 依既有設定略過；分批驗證紀錄及實際瀏覽器檢查見 [QA](QA.md)。
 - 發布資料包包含原創程式、CPI、VCMM 參考值及 MSCI 彙總參數／來源 metadata；不包含 MSCI 原始月序列、工作簿或清理後 CSV。使用條件查核見 [第三方紀錄](THIRD_PARTY_NOTICES.md)，沒有宣稱 MSCI 額外授權或背書。
-- GitHub main 更新不會自動更新 Pages。公開網站仍為下列 issue #6 版本；後續依使用者發布指示執行既有手動流程。
+- 已依使用者希望 GitHub.io 顯示新版的要求，將來源 commit [0cef7c5886bc7e028cfa02bfc8e8cd71f5c7556b](https://github.com/njames741/retirement-monte-carlo/commit/0cef7c5886bc7e028cfa02bfc8e8cd71f5c7556b) 發布至[公開網站](https://njames741.github.io/retirement-monte-carlo/)。[Pages 發布作業](https://github.com/njames741/retirement-monte-carlo/actions/runs/39043074090) 的 verify／deploy 均成功。
+- 公開 HTTP 回應及實際瀏覽器均顯示 v1.3。既有自訂設定可遷移；選 MSCI 與內建固定通膨後，報酬 7.89%、對數波動 15.97%、通膨 2.00% 顯示且唯讀。TWD、50 年 × 10,000、seed 741 的線上模擬完成，畫面回報約 1.09 秒，耗盡 2,495 條、25.0%；未將此單次測時視為速度保證。[公開頁面畫面](screenshots/github-pages-v1.3.png)。
+- GitHub main 更新仍不會自動更新 Pages，後續沿用手動發布流程。
 
 下方為各次公開發布的歷史紀錄，資料包及功能狀態以各次版本為準。
 

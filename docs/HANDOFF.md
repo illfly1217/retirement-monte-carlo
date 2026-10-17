@@ -4,7 +4,7 @@ Issues #4、#7、#8 已完成實作及本機驗證。MSCI ACWI IMI USD Net 真�
 
 41 項計算／資料測試及 31 項桌面／手機瀏覽器案例通過，手機 100k 依既有設定略過；分批重跑與限制見 [QA](QA.md)。最新規格見 [REVISION_1_3](REVISION_1_3.md)、[MSCI_PARAMETER_RESEARCH](MSCI_PARAMETER_RESEARCH.md) 及 README。使用條件查核與不確定處保留紀錄，不把原始序列再散布權限誤作參數模式的技術前提。
 
-本輪尚未更新公開網站。Pages 仍採手動發布，公開版目前為已發布的 issue #6 千分位功能；依使用者後續發布指示更新，無須重做已通過的本機工作。
+v1.3 已依使用者要求發布到 [GitHub.io](https://njames741.github.io/retirement-monte-carlo/)，來源 commit 0cef7c5886bc7e028cfa02bfc8e8cd71f5c7556b；[發布作業](https://github.com/njames741/retirement-monte-carlo/actions/runs/39043074090) 成功，公開網址版本、唯讀參數與 50 年 × 10k 模擬均已實測。Pages 仍採手動發布；推送程式與更新公開網站是兩個步驟，回報狀態時須清楚區分。
 
 下方是歷史交接紀錄，當時的「MSCI 未取得」與 CSV 使用流程已由 v1.3 取代。
 

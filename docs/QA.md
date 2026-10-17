@@ -7,7 +7,7 @@
 - Codex 實際瀏覽器另完成 TWD、MSCI 參數、固定通膨、50 年 × 10k 模擬，畫面回報約 0.69 秒。這是單次 smoke test，非速度保證。
 - Node benchmark：10k 約 0.300 秒、100k 約 2.901 秒、150 點搜尋約 1.264 秒；詳見 [Node 紀錄](benchmark-node.json)，未當成瀏覽器測時。
 - 可選單檔生成後，主程式及 Worker 語法檢查通過。已人工檢視[桌面唯讀欄位](screenshots/v1.3-locked-vcmm.png)與[手機 CPI 摘要](screenshots/v1.3-cpi-mobile.png)。
-- 本輪尚未更新公開網站；既有公開版本的發布紀錄見 [RELEASE](RELEASE.md)。
+- v1.3 已正式發布；[發布流程](https://github.com/njames741/retirement-monte-carlo/actions/runs/39043074090) 重跑 41 項計算／資料及 31 項瀏覽器測試通過，手機 100k 依原設定略過。公開網址另確認版本、MSCI／通膨唯讀欄位及 50 年 × 10k 模擬，畫面回報約 1.09 秒、耗盡 2,495 條，與本機相同條件一致。[線上畫面](screenshots/github-pages-v1.3.png)及部署來源見 [RELEASE](RELEASE.md)。
 
 下方保留舊版當時的驗證及資料狀態；MSCI 參數目前已完成，股票歷史月份重抽仍屬後續範圍。
 

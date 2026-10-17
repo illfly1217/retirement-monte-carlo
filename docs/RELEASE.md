@@ -1,3 +1,11 @@
+# 初始資產千分位已發布（2026-10-17）
+
+- [Issue #6](https://github.com/njames741/retirement-monte-carlo/issues/6) 已實作並更新至[公開網站](https://njames741.github.io/retirement-monte-carlo/)。資產輸入即時顯示千分位，支援含逗號貼上及正常編輯；計算、保存及匯出保留數值金額。
+- 部署來源 commit [5d8b583ae6da6cc081ef8a3de454e5991018e586](https://github.com/njames741/retirement-monte-carlo/commit/5d8b583ae6da6cc081ef8a3de454e5991018e586)；[Pages 發布作業](https://github.com/njames741/retirement-monte-carlo/actions/runs/39039288741) 的 verify／deploy 均成功。
+- 發布流程的語法檢查與 37 項計算／資料測試通過；瀏覽器測試 21 項通過，手機 100k 效能測試依既有設定略過。
+- 在真正公開網址以 Chromium 桌面及 Pixel 7 尺寸模擬確認 TWD 30,000,000／USD 1,000,000、編輯刪除、保存還原及重設。以 3,000 萬、4% 年初提領、零報酬／費用／通膨的一年情境驗證：年度支出 120 萬、期末 2,880 萬，JSON 初始資產為數值 30000000，兩種尺寸的 pageerror 均為零。
+- [公開頁面資產欄位截圖](screenshots/issue-6-live.png)。
+
 # v1.2 已更新公開網站（2026-10-17）
 
 - [公開網站](https://njames741.github.io/retirement-monte-carlo/) 已更新，部署來源 commit be2b69ecabae679d65099c43e315a57a6e079dd4。

@@ -43,3 +43,18 @@ input[readonly]{background:#edf1f1!important;color:#4e6268!important;border-colo
 .model-state b{font-weight:600}.model-state p{margin:4px 0;font-size:14px;color:#526c71}.model-state a{display:inline-block;margin-top:4px}
 label>.not-applicable{display:block;float:none;margin-top:6px;padding:11px 8px;min-height:46px;color:#52656a;background:#edf1f1;border-radius:6px;font-size:14px;font-weight:400}
 #samplingMethods table{white-space:normal}#samplingMethods td:last-child{white-space:normal;min-width:240px}
+
+/* Shared header rows keep paired controls aligned when a title wraps. */
+.field-pair{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:11px;row-gap:6px}
+.form-field{display:grid;grid-template-rows:auto auto;gap:6px;min-width:0;margin-bottom:16px}
+.field-pair>.form-field{grid-template-rows:subgrid;grid-row:span 2}
+.field-heading{display:flex;align-items:baseline;gap:4px;min-width:0;font-size:16px;line-height:1.6;color:#4e656a}
+.field-heading label{margin:0;min-width:0;font:inherit;font-weight:500;overflow-wrap:anywhere;text-wrap:balance}
+.field-unit{flex:none;margin-left:auto;color:#91a0a4;font-size:14px;white-space:nowrap}
+.form-field>input:not([type=checkbox]):not([type=range]):not([type=file]),.form-field>select{margin-top:0}
+.form-field>.not-applicable{display:flex;align-items:center;min-height:46px;padding:10px 11px;border:1px solid #d7dfe0;border-radius:6px;background:#edf1f1;color:#52656a;font-size:14px;line-height:1.6}
+.field-help{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:24px;padding:0;background:transparent;color:#708c8e;vertical-align:middle;border-radius:4px}
+.field-help>span{display:grid;place-items:center;width:15px;height:15px;border:1px solid currentColor;border-radius:50%;font:600 11px/1 var(--sans)}
+.field-help:hover,.field-help[data-open]{background:#edf5f2;color:#147e73}
+.field-help:active:not(:disabled){transform:none}
+.field-tooltip{position:fixed;z-index:30;width:max-content;max-width:min(300px,calc(100vw - 24px));margin:0;padding:11px 13px;border:1px solid #31595c;border-radius:8px;background:#183b40;color:#f2f8f6;box-shadow:0 5px 18px #17373c26;font-size:14px;line-height:1.75;overflow-wrap:anywhere}

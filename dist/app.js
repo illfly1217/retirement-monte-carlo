@@ -5,10 +5,12 @@ import{datasetForCurrency}from './datasets.js';
 import{CPI}from './cpi-data.js';
 import{fanChart,barChart,rateChart,money,pct}from './charts.js';
 import{amountInput}from './amount-input.js';
+import{fieldHelp}from './field-help.js';
 import{resolveScenario,scenarioMetadata,isCustomReturn,isCustomInflation}from './scenarios.js';
 import{EQUITY_PARAMETERS}from './equity-parameters.js';
 const $=id=>document.getElementById(id);
 const initialAmount=amountInput($('initial'),$('initialError'));
+fieldHelp($('parameters'));
 function setDrawer(open){document.querySelector('.sidebar').classList.toggle('open',open);$('mobileParams').setAttribute('aria-expanded',String(open));}
 const fractionFields=new Set(['rate','cagr','vol','fee','drag','inflation','inflationVol','usWeight','longRun','guard','adjust','ceiling','floor','spendingFloor','successTarget']);
 const stringFields=new Set(['currency','strategy','returnMode','sampling','inflationModel','successMetric']);

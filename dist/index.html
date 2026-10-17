@@ -14,30 +14,51 @@
     <label>初始資產 <span id="initialCurrency">TWD</span><input id="initial" type="text" inputmode="numeric" value="30,000,000" data-min="1" data-max="1000000000000" required autocomplete="off" spellcheck="false" aria-describedby="initialError"></label>
     <p id="initialError" class="hint field-error" role="alert" hidden></p>
     <p id="currencyHint" class="hint">切換幣種會套用該幣種的資產與通膨預設。台幣模式假設美元兌台幣匯率不變。</p>
-    <div class="field-pair"><label>退休年數<input id="years" type="number" value="50" min="1" max="60"></label><label>初始提領率 <span>%</span><input id="rate" type="number" value="4" min="0" max="20" step="0.1"></label></div>
+    <div class="field-pair">
+      <div class="form-field"><div class="field-heading"><label for="years">退休年數</label></div><input id="years" type="number" value="50" min="1" max="60"></div>
+      <div class="form-field"><div class="field-heading"><label for="rate">初始提領率</label><span class="field-unit">%</span></div><input id="rate" type="number" value="4" min="0" max="20" step="0.1"></div>
+    </div>
     <label>提領策略<select id="strategy"><option value="fixed">固定實質金額</option><option value="percent">固定資產比例</option><option value="gk">Guyton–Klinger 護欄</option><option value="dynamic">動態支出上下限</option></select></label>
     <p id="strategyHint" class="hint"></p>
-    <details id="strategyDetails" hidden><summary>提領策略細節</summary><div id="gkFields" class="field-pair" hidden><label>護欄偏離 <span>%</span><input id="guard" type="number" value="20" min="1" max="80" disabled></label><label>護欄調幅 <span>%</span><input id="adjust" type="number" value="10" min="1" max="50" disabled></label></div><div id="dynamicFields" class="field-pair" hidden><label>動態上限 <span>%</span><input id="ceiling" type="number" value="5" min="0" max="50" step="0.5" disabled></label><label>動態下限 <span>%</span><input id="floor" type="number" value="2.5" min="0" max="50" step="0.5" disabled></label></div></details>
+    <details id="strategyDetails" hidden><summary>提領策略細節</summary>
+      <div id="gkFields" class="field-pair" hidden>
+        <div class="form-field"><div class="field-heading"><label for="guard">護欄偏離</label><button type="button" class="field-help" aria-label="護欄偏離說明" data-help="提領率偏離初始比例多少時，觸發支出調整。例如初始 4%、偏離 20%，護欄就是 3.2% 與 4.8%；本工具最後 15 年停用減碼護欄。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="guard" type="number" value="20" min="1" max="80" disabled></div>
+        <div class="form-field"><div class="field-heading"><label for="adjust">護欄調幅</label><button type="button" class="field-help" aria-label="護欄調幅說明" data-help="觸發護欄時，生活費增加或減少的比例。例如調幅 10%，原本 100 萬會調為 110 萬或 90 萬。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="adjust" type="number" value="10" min="1" max="50" disabled></div>
+      </div>
+      <div id="dynamicFields" class="field-pair" hidden>
+        <div class="form-field"><div class="field-heading"><label for="ceiling">動態上限</label><button type="button" class="field-help" aria-label="動態上限說明" data-help="每年生活費相較前一年、扣除通膨後，最多可增加的比例。例如上限 5%，去年的實質生活費 100 萬，今年最多 105 萬。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="ceiling" type="number" value="5" min="0" max="50" step="0.5" disabled></div>
+        <div class="form-field"><div class="field-heading"><label for="floor">動態下限</label><button type="button" class="field-help" aria-label="動態下限說明" data-help="每年生活費相較前一年、扣除通膨後，最多可減少的比例。例如下限 2.5%，去年的實質生活費 100 萬，今年目標至少 97.5 萬；資產不足時仍可能付不出。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="floor" type="number" value="2.5" min="0" max="50" step="0.5" disabled></div>
+      </div>
+    </details>
     <div class="section-label">02 <span>市場與報酬</span></div>
     <label>報酬假設<select id="returnMode"><option value="msci" selected>MSCI 歷史估計</option><option value="custom">自訂長期報酬</option><option value="vcmm">VCMM 參考情境</option></select></label>
-    <div id="customFields"><label><b id="cagrLabel" class="field-title">名目幾何年報酬</b> <span>%／年</span><input id="cagr" type="number" value="7" min="-20" max="30" step="any"></label></div>
+    <div id="customFields"><div class="form-field"><div class="field-heading"><label id="cagrLabel" for="cagr">名目幾何年報酬</label><button type="button" class="field-help" aria-label="幾何年報酬說明" data-help="把多年複利成長換算成平均每年的報酬率，尚未扣除通膨。本工具以此設定報酬趨勢，不代表每年都有相同報酬。"><span aria-hidden="true">!</span></button><span class="field-unit">%／年</span></div><input id="cagr" type="number" value="7" min="-20" max="30" step="any"></div></div>
     <p id="returnPresetNote" class="hint" aria-live="polite"></p>
-    <details id="vcmmFields" hidden><summary>VCMM 假設細節</summary><p class="hint">前 10 年報酬 <b id="vcmmAnchor"></b>，之後逐步銜接長期假設。</p><label>美股權重 <span>%</span><input id="usWeight" type="number" value="63" min="0" max="100" readonly></label><div class="field-pair"><label>長期報酬 <span>%</span><input id="longRun" type="number" value="7" min="-20" max="30" step="any" readonly></label><label>銜接年數<input id="transition" type="number" value="10" min="1" max="30" readonly></label></div><p class="hint">權重、波動及長期銜接為本工具的研究假設。</p></details>
+    <details id="vcmmFields" hidden><summary>VCMM 假設細節</summary><p class="hint">前 10 年報酬 <b id="vcmmAnchor"></b>，之後逐步銜接長期假設。</p><label>美股權重 <span>%</span><input id="usWeight" type="number" value="63" min="0" max="100" readonly></label><div class="field-pair">
+      <div class="form-field"><div class="field-heading"><label for="longRun">長期報酬</label><span class="field-unit">%</span></div><input id="longRun" type="number" value="7" min="-20" max="30" step="any" readonly></div>
+      <div class="form-field"><div class="field-heading"><label for="transition">銜接年數</label><button type="button" class="field-help" aria-label="銜接年數說明" data-help="前 10 年參考報酬結束後，再用多少年逐步轉向長期報酬假設。這段銜接是本工具的研究設定。"><span aria-hidden="true">!</span></button></div><input id="transition" type="number" value="10" min="1" max="30" readonly></div>
+    </div><p class="hint">權重、波動及長期銜接為本工具的研究假設。</p></details>
     <input id="sampling" type="hidden" value="parametric" hidden>
     <div class="hint" id="equityModelState"><a href="#samplingMethods" id="samplingMethodsLink">模型與資料說明 ↗</a></div>
-    <label id="volField" title="年化對數報酬的標準差">報酬波動程度 <span>%</span><input id="vol" type="number" value="18" min="0" max="80" step="any"></label>
+    <div id="volField" class="form-field"><div class="field-heading"><label for="vol">報酬波動程度</label><button type="button" class="field-help" aria-label="報酬波動程度說明" data-help="年化對數報酬的標準差，用來描述報酬起伏。數值越大，模擬中的漲跌通常越劇烈；不是每年漲跌的上限。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="vol" type="number" value="18" min="0" max="80" step="any"></div>
     <details id="costSettings"><summary>費用與進階設定</summary>
-    <div class="field-pair"><label>基金年費用 <span>%</span><input id="fee" type="number" value="0.06" min="0" max="5" step="0.01"></label><label>額外追蹤拖累 <span>%</span><input id="drag" type="number" value="0" min="-5" max="5" step="0.01"></label></div>
+    <div class="field-pair">
+      <div class="form-field"><div class="field-heading"><label for="fee">基金年費用</label><span class="field-unit">%</span></div><input id="fee" type="number" value="0.06" min="0" max="5" step="0.01"></div>
+      <div class="form-field"><div class="field-heading"><label for="drag">額外追蹤拖累</label><button type="button" class="field-help" aria-label="額外追蹤拖累說明" data-help="基金費用之外，每年額外扣減的報酬，用來模擬基金落後指數的差距。填正值降低報酬，填負值則提高報酬。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="drag" type="number" value="0" min="-5" max="5" step="0.01"></div>
+    </div>
     <p class="hint">報酬已包含股息，基金費用另計。</p>
-    <label>隨機種子<input id="seed" type="number" value="741" min="0" max="4294967295"></label>
+    <div class="form-field"><div class="field-heading"><label for="seed">隨機種子</label><button type="button" class="field-help" aria-label="隨機種子說明" data-help="決定亂數序列的起點。相同種子與參數可重現同一批模擬，方便比較；換種子則可觀察抽樣差異。"><span aria-hidden="true">!</span></button></div><input id="seed" type="number" value="741" min="0" max="4294967295"></div>
     </details>
     <div class="section-label">03 <span>通膨與運算</span></div>
     <label><b id="purchasingPowerLabel" class="field-title">台幣購買力基準</b><select id="inflationModel"><option value="preset" selected>固定通膨（預設）</option><option value="constant">自訂固定通膨</option><option value="lognormal">自訂隨機通膨</option><option value="cpi">內建台幣 CPI 區塊抽樣（獨立）</option></select></label>
-    <div class="field-pair"><label><b id="inflationLabel" class="field-title">年通膨</b> <span>%</span><input id="inflation" type="number" value="2" min="-5" max="20" step="any" readonly></label><label id="inflationVolField">通膨對數波動 <span>%</span><input id="inflationVol" type="number" value="1" min="0" max="20" step="any" hidden disabled><span id="inflationVolNA" class="not-applicable">不適用（固定通膨）</span></label></div>
+    <div class="field-pair">
+      <div class="form-field"><div class="field-heading"><label id="inflationLabel" for="inflation">年通膨</label><button id="inflationHelp" type="button" class="field-help" aria-label="年通膨與幾何平均說明" data-help="物價每年上升的比例，用來換算購買力。歷史 CPI 模式顯示年化幾何平均，只是樣本摘要，實際仍逐月抽樣。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="inflation" type="number" value="2" min="-5" max="20" step="any" readonly></div>
+      <div id="inflationVolField" class="form-field"><div class="field-heading"><label for="inflationVol">通膨對數波動</label><button type="button" class="field-help" aria-label="通膨對數波動說明" data-help="物價變動取對數後的年化標準差，描述通膨的起伏程度。隨機通膨用它設定波動；CPI 模式僅顯示歷史統計，固定通膨則不適用。"><span aria-hidden="true">!</span></button><span class="field-unit">%</span></div><input id="inflationVol" type="number" value="1" min="0" max="20" step="any" hidden disabled><span id="inflationVolNA" class="not-applicable">不適用（固定通膨）</span></div>
+    </div>
     <p id="inflationPresetNote" class="hint" aria-live="polite"></p>
     <div id="inflationModelState" class="hint"></div>
-    <label id="blockField" hidden>通膨區塊目標長度 <span>月</span><input id="block" type="number" value="24" min="1" max="120"></label>
-    <label>模擬路徑<select id="paths"><option value="1000">1,000 · 快速探索</option><option value="10000" selected>10,000 · 標準分析</option><option value="100000">100,000 · 精確模式</option></select></label>
+    <div id="blockField" class="form-field" hidden><div class="field-heading"><label for="block">通膨區塊目標長度</label><button type="button" class="field-help" aria-label="通膨區塊目標長度說明" data-help="每段歷史通膨連續抽樣的目標平均月數，用來保留一部分連續變化。實際片段長短不一，遇到缺月或資料尾端也會重新起抽。"><span aria-hidden="true">!</span></button><span class="field-unit">月</span></div><input id="block" type="number" value="24" min="1" max="120"></div>
+    <div class="form-field"><div class="field-heading"><label for="paths">模擬路徑</label><button type="button" class="field-help" aria-label="模擬路徑說明" data-help="模擬多少種可能的市場與退休經歷。條數越多，抽樣結果通常越穩定，也需要更多時間；不會消除模型假設的誤差。"><span aria-hidden="true">!</span></button></div><select id="paths"><option value="1000">1,000 · 快速探索</option><option value="10000" selected>10,000 · 標準分析</option><option value="100000">100,000 · 精確模式</option></select></div>
     <div class="aside-actions"><button class="primary" id="run" type="submit">執行模擬 <span>↗</span></button><button id="reset" type="button" class="quiet">重設參數</button></div>
   </fieldset>
   </form>

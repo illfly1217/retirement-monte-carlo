@@ -1,3 +1,9 @@
+# v1.4.0（2026-10-18）
+
+[Issue #9](https://github.com/njames741/retirement-monte-carlo/issues/9) 已實作：首頁退休計畫直接輸入最低每月生活費，以固定實質金額判定生活費成功率，並移除提領率探索。48 項計算／資料／Worker 測試、43 項桌面／手機案例及 12 項獨立數值稽核通過，手機 100k 依既有設定略過；[修改與驗證紀錄](REVISION_1_4.md)。
+
+本次修改透過 [PR #10](https://github.com/njames741/retirement-monte-carlo/pull/10) 審閱及合併，發布由 [Pages 工作流程](https://github.com/njames741/retirement-monte-carlo/actions/workflows/pages.yml) 驗證後執行；以 main 對應提交的 deploy 終態確認上線。公開入口：[退休研究室](https://njames741.github.io/retirement-monte-carlo/)。
+
 # v1.3.1（2026-10-17）
 
 使用者已授權修正後直接推送。本版本修正 CPI 月份抽樣權重及獨立通膨亂數串流，精簡主畫面並以今天購買力說明金額；[修正內容及驗證](REVISION_1_3_1.md)。本機 44 項計算、31 項瀏覽器案例及 12 項獨立核對通過，手機 100k 按既有設定略過。
@@ -66,7 +72,7 @@ npm run test:browser
 
 CI 使用 Ubuntu、Node 24、Chromium，另有 Pixel 7 viewport 模擬。瀏覽器測試實際服務 `/retirement-monte-carlo/`，檢查 Worker、表單、圖表、CSV、保存、比較、搜尋與下載。只有開發測試需要 Playwright，正式網站沒有該套件。
 
-改變引擎再跑 `npm run benchmark -- --swr`，並在實際瀏覽器測時。請勿把 Node 結果稱為瀏覽器結果。
+改變引擎再跑 `npm run benchmark`，並在實際瀏覽器測時。請勿把 Node 結果稱為瀏覽器結果。v1.4 已移除舊版的 `--swr` 搜尋量測。
 
 ## 手動發布程序（第一次已完成）
 
